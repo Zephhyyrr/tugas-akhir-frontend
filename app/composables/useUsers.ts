@@ -1,40 +1,46 @@
-export const useUsers = () => {
-  const users = useState('users', () => [
-    { id: 1, name: 'Admin Utama', email: 'admin@surau.com', role: 'Administrator', status: 'Active' },
-    { id: 2, name: 'Budi Santoso', email: 'budi@surau.com', role: 'Staff', status: 'Active' },
-    { id: 3, name: 'Siti Aminah', email: 'siti@surau.com', role: 'Staff', status: 'Inactive' },
-  ]);
 
-  const getUsers = () => {
-    return users.value;
-  };
+import { UserService } from '~/application/services/UserServices';
+import type { ICreateUserPayload, IUpdateUserPayload, IUpdateUserFotoPayload } from '~/domain/models/IUser';
+import type { IPaginationQuery } from '~/domain/types/IPaginationQuery';
 
-  const getUserById = (id: number) => {
-    return users.value.find(u => u.id === id);
-  };
+export const useUser = () => {
+    const fetchUsers = (params: Ref<IPaginationQuery>) => {
+        return useAsyncData(
+            'users-list',
+            () => UserService.getAllUsers(params.value),
+            { watch: [params] }
+        );
+    };
 
-  const addUser = (user: any) => {
-    const newId = users.value.length > 0 ? Math.max(...users.value.map(u => u.id)) + 1 : 1;
-    users.value.push({ ...user, id: newId });
-  };
+    const fetchUserById = (id: number) => {
+        return useAsyncData(
+            `user-detail-${id}`,
+            () => UserService.getUserById(id)
+        );
+    };
 
-  const updateUser = (id: number, updatedUser: any) => {
-    const index = users.value.findIndex(u => u.id === id);
-    if (index !== -1) {
-      users.value[index] = { ...users.value[index], ...updatedUser };
-    }
-  };
+    const createUser = async (payload: ICreateUserPayload) => {
+        return await UserService.createUser(payload);
+    };
 
-  const deleteUser = (id: number) => {
-    users.value = users.value.filter(u => u.id !== id);
-  };
+    const updateUser = async (id: number, payload: IUpdateUserPayload) => {
+        return await UserService.updateUser(id, payload);
+    };
 
-  return {
-    users,
-    getUsers,
-    getUserById,
-    addUser,
-    updateUser,
-    deleteUser
-  };
+    const deleteUser = async (id: number) => {
+        return await UserService.deleteUser(id);
+    };
+
+    const updateFotoProfil = async (id: number, payload: IUpdateUserFotoPayload) => {
+        return await UserService.updateFotoProfil(id, payload);
+    };
+
+    return {
+        fetchUsers,
+        fetchUserById,
+        createUser,
+        updateUser,
+        deleteUser,
+        updateFotoProfil
+    };
 };

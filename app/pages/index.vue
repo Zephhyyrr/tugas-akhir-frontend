@@ -48,6 +48,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import ForecastingControls from '~/components/features/ForecastingControls.vue';
+import MainChart from '~/components/features/MainChart.vue';
+import SummaryCards from '~/components/features/SummaryCards.vue';
 
 const selectedDuration = ref('year-1');
 const currentBalance = ref(25450000);
