@@ -1,6 +1,5 @@
 import type { IUser } from './IUser';
 import type { IKeteranganTransaksi } from './IKeteranganTransaksi';
-
 export interface ITransaksi {
     id: number;
     saldo: number;
@@ -17,6 +16,8 @@ export interface ITransaksi {
     keteranganTransaksi?: IKeteranganTransaksi;
 }
 
+// Create Payload
 export interface ICreateTransaksiPayload extends Omit<ITransaksi, 'id' | 'saldo' | 'isDeleted' | 'createdAt' | 'updatedAt' | 'user' | 'userId' | 'keteranganTransaksi'> {}
 
+// Update Payload
 export interface IUpdateTransaksiPayload extends Partial<ICreateTransaksiPayload> {}
