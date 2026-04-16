@@ -1,6 +1,15 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "files": [],
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["app/*"],
+      "@/*": ["app/*"],
+      "#imports": [".nuxt/imports"]
+    }
+  },
   "references": [
     {
       "path": "./.nuxt/tsconfig.app.json"

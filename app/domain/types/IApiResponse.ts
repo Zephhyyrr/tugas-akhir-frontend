@@ -1,4 +1,3 @@
-
 export interface IPaginationMeta {
     totalItems: number;
     totalPages: number;

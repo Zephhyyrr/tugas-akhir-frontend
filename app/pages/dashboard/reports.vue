@@ -129,7 +129,7 @@ const formatDate = (dateString) => {
 }
 
 const handleEdit = (item) => {
-  router.push(`/edit/${item.id}`);
+  router.push(`/dashboard/edit/${item.id}`);
 }
 
 const handleDelete = (item) => {

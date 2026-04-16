@@ -62,7 +62,7 @@
         </div>
 
         <div class="mt-8 flex justify-end space-x-3">
-          <NuxtLink to="/users" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors">
+          <NuxtLink to="/dashboard/users" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors">
             Batal
           </NuxtLink>
           <button 
@@ -76,7 +76,7 @@
     </div>
     <div v-else class="text-center py-12">
         <p class="text-gray-500">Pengguna tidak ditemukan.</p>
-        <NuxtLink to="/users" class="text-emerald-600 hover:underline mt-2 inline-block">Kembali ke Daftar</NuxtLink>
+        <NuxtLink to="/dashboard/users" class="text-emerald-600 hover:underline mt-2 inline-block">Kembali ke Daftar</NuxtLink>
     </div>
   </div>
 </template>
@@ -106,7 +106,7 @@ onMounted(() => {
 const submitForm = () => {
     if (user.value) {
         updateUser(userId, form.value);
-        router.push('/users');
+        router.push('/dashboard/users');
     }
 };
 </script>

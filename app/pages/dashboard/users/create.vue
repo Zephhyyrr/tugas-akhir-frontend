@@ -64,7 +64,7 @@
         </div>
 
         <div class="mt-8 flex justify-end space-x-3">
-          <NuxtLink to="/users" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors">
+          <NuxtLink to="/dashboard/users" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors">
             Batal
           </NuxtLink>
           <button 
@@ -92,6 +92,6 @@ const form = ref({
 
 const submitForm = () => {
   addUser({ ...form.value });
-  router.push('/users');
+  router.push('/dashboard/users');
 };
 </script>

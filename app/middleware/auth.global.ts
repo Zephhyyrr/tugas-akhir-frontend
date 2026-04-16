@@ -1,0 +1,16 @@
+export default defineNuxtRouteMiddleware((to, from) => {
+    if (to.path === '/reset-password') {
+        return navigateTo({ path: '/auth/reset-password', query: to.query });
+    }
+
+    const token = useCookie('token');
+    const isPublic = to.path === '/' || to.path.startsWith('/auth');
+
+    if (!token.value && !isPublic) {
+        return navigateTo('/auth/login');
+    }
+
+    if (token.value && isPublic) {
+        return navigateTo('/dashboard');
+    }
+});

@@ -54,7 +54,7 @@
                     ]">
                         Update Transaksi
                     </button>
-                    <NuxtLink to="/reports"
+                    <NuxtLink to="/dashboard/reports"
                         class="text-gray-700 bg-white border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 hover:bg-gray-50 hover:text-gray-900 focus:z-10">
                         Batal
                     </NuxtLink>
@@ -97,6 +97,6 @@ onMounted(() => {
 const submitForm = () => {
     // Simulate update
     alert(`Transaksi berhasil diupdate!\nID: ${transactionId}\nJumlah: Rp ${formData.value.amount}`);
-    router.push('/reports');
+    router.push('/dashboard/reports');
 }
 </script>

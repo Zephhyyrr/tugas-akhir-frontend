@@ -10,7 +10,6 @@ export const useAuth = () => {
         const response = await AuthService.login(payload);
         if (response.success && response.data) {
             authStore.setAuth(response.data.user, response.data.token);
-            router.push('/dashboard');
         }
         return response;
     };
@@ -18,15 +17,15 @@ export const useAuth = () => {
     const logout = async () => {
         await AuthService.logout();
         authStore.clearAuth();
-        router.push('/login');
+        router.push('/auth/login');
     };
 
     return {
         login,
         logout,
-        forgotPassword: AuthService.forgotPassword,
-        resetPassword: AuthService.resetPassword,
-        verifyEmail: AuthService.verifyEmail,
+        forgotPassword: (payload: any) => AuthService.forgotPassword(payload),
+        resetPassword: (payload: any) => AuthService.resetPassword(payload),
+        verifyEmail: (payload: any) => AuthService.verifyEmail(payload),
         isAuthenticated: computed(() => authStore.isAuthenticated),
         user: computed(() => authStore.user)
     };

@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-bold text-gray-800">Manajemen Pengguna</h1>
         <p class="text-gray-600">Kelola akun pengguna sistem</p>
       </div>
-      <NuxtLink to="/users/create" class="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+      <NuxtLink to="/dashboard/users/create" class="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
         <PlusIcon class="w-5 h-5 mr-2" />
         Tambah Pengguna
       </NuxtLink>
