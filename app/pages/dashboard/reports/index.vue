@@ -80,16 +80,49 @@
         </table>
       </div>
     </div>
+
+    <!-- Edit Modal -->
+    <BaseModal
+      v-model="showEditModal"
+      title="Edit Transaksi"
+      icon="lucide:pencil"
+      type="info"
+      confirmText="Update Transaksi"
+      @confirm="submitEdit"
+    >
+      <div v-if="editData" class="space-y-4 text-left">
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-900">Uraian / Sumber</label>
+          <input type="text" v-model="editData.category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5" required>
+        </div>
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-900">Tanggal</label>
+          <input type="date" v-model="editData.date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5" required>
+        </div>
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-900">Jumlah (Rp)</label>
+          <input type="number" v-model="editData.amount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5" required>
+        </div>
+        <div>
+          <label class="block mb-1 text-sm font-medium text-gray-900">Keterangan</label>
+          <textarea rows="2" v-model="editData.description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5" required></textarea>
+        </div>
+      </div>
+    </BaseModal>
+
   </div>
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'dashboard'
+});
+
 import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { DownloadIcon, ArrowDownLeftIcon, ArrowUpRightIcon, PencilIcon, TrashIcon } from 'lucide-vue-next';
 import * as XLSX from 'xlsx';
+import BaseModal from '~/components/base/BaseModal.vue';
 
-const router = useRouter();
 const activeTab = ref('income');
 
 // Dummy Data
@@ -128,18 +161,34 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('id-ID', options);
 }
 
+// Modal State
+const showEditModal = ref(false);
+const editData = ref(null);
+
 const handleEdit = (item) => {
-  router.push(`/dashboard/edit/${item.id}`);
+  editData.value = { ...item }; // Clone data for editing
+  showEditModal.value = true;
+}
+
+const submitEdit = () => {
+  // Find and replace the edited item in correct array
+  const targetArray = activeTab.value === 'income' ? incomeData.value : expenseData.value;
+  const index = targetArray.findIndex(i => i.id === editData.value.id);
+  if (index !== -1) {
+    targetArray[index] = { ...editData.value };
+    alert('Transaksi berhasil diupdate!');
+  }
 }
 
 const handleDelete = (item) => {
   if (confirm(`Apakah anda yakin ingin menghapus data: ${item.category}?`)) {
-    alert('Data dihapus (Simulasi)');
+    const targetArray = activeTab.value === 'income' ? incomeData.value : expenseData.value;
+    const index = targetArray.findIndex(i => i.id === item.id);
+    if(index !== -1) targetArray.splice(index, 1);
   }
 }
 
 const exportToExcel = () => {
-  // Determine which data to export
   const dataToExport = currentData.value.map((item, index) => ({
     'No': index + 1,
     'Tanggal': formatDate(item.date),
@@ -150,14 +199,8 @@ const exportToExcel = () => {
 
   const worksheet = XLSX.utils.json_to_sheet(dataToExport);
   const workbook = XLSX.utils.book_new();
-
-  // Name sheet based on tab
   const sheetName = activeTab.value === 'income' ? 'Laporan_Pemasukan' : 'Laporan_Pengeluaran';
-
   XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-
-  // Filename
-  const fileName = `${sheetName}_SurauZamZam.xlsx`;
-  XLSX.writeFile(workbook, fileName);
+  XLSX.writeFile(workbook, `${sheetName}_SurauZamZam.xlsx`);
 };
 </script>

@@ -1,10 +1,10 @@
 <template>
     <div>
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Transaksi</h1>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Input Transaksi</h1>
 
         <div class="max-w-2xl bg-white p-8 rounded-xl shadow-sm border border-gray-100">
             <form @submit.prevent="submitForm">
-                <!-- Transaction Type Selection (Disabled in Edit Mode usually, or enabled) -->
+                <!-- Transaction Type Selection -->
                 <div class="mb-6">
                     <label class="block mb-2 text-sm font-medium text-gray-900">Jenis Transaksi</label>
                     <div class="flex items-center space-x-4">
@@ -47,56 +47,33 @@
                         placeholder="Deskripsi detail transaksi..." required></textarea>
                 </div>
 
-                <div class="flex items-center space-x-4">
-                    <button type="submit" :class="[
-                        'text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors',
-                        transactionType === 'income' ? 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-300' : 'bg-red-600 hover:bg-red-700 focus:ring-red-300'
-                    ]">
-                        Update Transaksi
-                    </button>
-                    <NuxtLink to="/dashboard/reports"
-                        class="text-gray-700 bg-white border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 hover:bg-gray-50 hover:text-gray-900 focus:z-10">
-                        Batal
-                    </NuxtLink>
-                </div>
+                <button type="submit" :class="[
+                    'text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors',
+                    transactionType === 'income' ? 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-300' : 'bg-red-600 hover:bg-red-700 focus:ring-red-300'
+                ]">
+                    {{ transactionType === 'income' ? 'Simpan Pemasukan' : 'Simpan Pengeluaran' }}
+                </button>
             </form>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+definePageMeta({
+    layout: 'dashboard'
+});
 
-const route = useRoute();
-const router = useRouter();
-const transactionId = route.params.id;
+import { ref } from 'vue';
 
 const transactionType = ref('income');
 const formData = ref({
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     amount: '',
     description: ''
 });
 
-onMounted(() => {
-    // Simulate fetching data based on ID
-    // In a real app, you'd call an API here
-    const isIncome = parseInt(transactionId) < 100; // Simplified logic based on my dummy data IDs
-
-    transactionType.value = isIncome ? 'income' : 'expense';
-
-    // Dummy pre-fill
-    formData.value = {
-        date: '2025-01-02',
-        amount: isIncome ? 200000 : 25000,
-        description: isIncome ? 'Infak Drs. Lahmuddin Mutiara IV' : 'Uang Sampah'
-    };
-});
-
 const submitForm = () => {
-    // Simulate update
-    alert(`Transaksi berhasil diupdate!\nID: ${transactionId}\nJumlah: Rp ${formData.value.amount}`);
-    router.push('/dashboard/reports');
+    const typeLabel = transactionType.value === 'income' ? 'Pemasukan' : 'Pengeluaran';
+    alert(`Data ${typeLabel} berhasil disimpan:\nJumlah: Rp ${formData.value.amount}\nKeterangan: ${formData.value.description}`);
 }
 </script>

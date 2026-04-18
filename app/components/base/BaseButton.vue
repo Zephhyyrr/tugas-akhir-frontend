@@ -9,7 +9,8 @@
             {{ loadingText }}
         </span>
         <span v-else class="flex items-center justify-center gap-2">
-            <Icon v-if="icon" :icon="icon" class="w-4 h-4" />
+            <Icon v-if="typeof icon === 'string' && icon" :icon="icon" class="w-4 h-4" />
+            <component v-else-if="icon" :is="icon" class="w-4 h-4" />
             <slot>{{ text }}</slot>
         </span>
     </button>
@@ -26,7 +27,7 @@ const props = defineProps({
     disabled: { type: Boolean, default: false },
     isLoading: { type: Boolean, default: false },
     loadingText: { type: String, default: 'Memproses...' },
-    icon: { type: String, default: '' },
+    icon: { type: [String, Object, Function], default: '' },
     text: { type: String, default: 'Submit' }
 });
 

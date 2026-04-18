@@ -47,6 +47,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'dashboard'
+});
+
 import { ref } from 'vue';
 import ForecastingControls from '~/components/features/ForecastingControls.vue';
 import MainChart from '~/components/features/MainChart.vue';

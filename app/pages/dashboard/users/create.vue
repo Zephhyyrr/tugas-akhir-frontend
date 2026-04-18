@@ -80,6 +80,12 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'dashboard'
+});
+
+import { useUsers } from '~/application/stores/useUsersStore';
+
 const { addUser } = useUsers();
 const router = useRouter();
 

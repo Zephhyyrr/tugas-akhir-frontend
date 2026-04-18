@@ -1,0 +1,98 @@
+<template>
+  <header
+    class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-between px-4 md:px-8 shadow-sm transition-colors duration-200">
+    <div class="flex items-center">
+      <!-- Menu Button -->
+      <button @click="$emit('toggleMenu')"
+        class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 mr-4 focus:outline-none">
+        <MenuIcon class="w-6 h-6" />
+      </button>
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 hidden sm:block">
+        {{ currentRouteName }}
+      </h2>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2 mr-2">
+        <div
+          class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold overflow-hidden border border-emerald-200 dark:border-emerald-800">
+          <img v-if="userAvatar" :src="userAvatar" :alt="userDisplayName" class="w-full h-full object-cover" />
+          <span v-else>{{ userInitials }}</span>
+        </div>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-200 hidden sm:block">{{ userDisplayName }}</span>
+      </div>
+
+      <!-- Using BaseButton for Logout -->
+      <BaseButton variant="danger" :fullWidth="false" class="flex items-center !py-2 !px-3"
+        @click="showLogoutModal = true" icon="lucide:log-out">
+        <span class="hidden sm:inline ml-1">Keluar</span>
+      </BaseButton>
+    </div>
+
+    <!-- Alert for Feedback -->
+    <BaseAlert v-if="logoutAlert" class="fixed top-4 right-4 z-50 w-80" type="success" icon="lucide:check-circle"
+      title="Logout Berhasil" dismissible @close="logoutAlert = false">
+      Anda sedang dialihkan...
+    </BaseAlert>
+
+    <!-- BaseModal for Logout confirmation -->
+    <BaseModal v-model="showLogoutModal" title="Konfirmasi Keluar" icon="lucide:log-out" type="danger"
+      confirmText="Ya, Keluar Akses" @confirm="handleConfirmLogout">
+      Apakah Anda yakin ingin keluar dari halaman sistem? Sesi Anda saat ini akan diakhiri dan harus login kembali untuk
+      masuk.
+    </BaseModal>
+  </header>
+</template>
+
+<script setup>
+import { computed, ref } from 'vue';
+import { MenuIcon } from 'lucide-vue-next';
+import { useRoute } from '#imports';
+import { useAuth } from '~/composables/useAuth';
+import BaseButton from '~/components/base/BaseButton.vue';
+import BaseModal from '~/components/base/BaseModal.vue';
+import BaseAlert from '~/components/base/BaseAlert.vue';
+
+defineEmits(['toggleMenu']);
+
+const route = useRoute();
+const { logout, user } = useAuth();
+const {data: userData} = useUser();
+const showLogoutModal = ref(false);
+const logoutAlert = ref(false);
+
+const handleConfirmLogout = async () => {
+  logoutAlert.value = true;
+  showLogoutModal.value = false;
+  setTimeout(async () => {
+    await logout();
+  }, 1000);
+};
+
+const userDisplayName = computed(() => user.value?.nama || user.value?.email || 'Administrator');
+const userAvatar = computed(() => user.value?.fotoProfile || '');
+
+const userInitials = computed(() => {
+  if (user.value?.nama) {
+    const names = user.value.nama.trim().split(' ').filter(Boolean);
+    if (names.length >= 2) {
+      return (names[0][0] + names[1][0]).toUpperCase();
+    }
+    return names[0][0].toUpperCase();
+  }
+  return 'A'; // Admin fallback
+});
+
+const currentRouteName = computed(() => {
+  switch (route.path) {
+    case '/dashboard': return 'Dashboard Utama';
+    case '/dashboard/reports': return 'Laporan Transaksi';
+    case '/dashboard/input': return 'Input Donasi';
+    case '/dashboard/settings': return 'Pengaturan Sistem';
+    case '/dashboard/users': return 'Manajemen Pengguna';
+    default:
+      if (route.path.startsWith('/dashboard/users/')) return 'Detail Pengguna';
+      return 'Dashboard';
+  }
+});
+</script>

@@ -14,6 +14,7 @@ export const endpoints = {
         UPDATE: (id: number) => `users/${id}`,
         DELETE: (id: number) => `users/${id}`,
         FOTO_PROFIL: (id: number) => `users/${id}/photo`,
+        ACTIVE: (id: number) => `users/${id}/activate`,
     },
 
     CONTENT: {

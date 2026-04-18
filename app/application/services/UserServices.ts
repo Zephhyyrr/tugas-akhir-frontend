@@ -1,6 +1,6 @@
 import { BaseService } from './BaseService';
 import { endpoints } from '~/infrastructure/http/endpoints';
-import type { IUser, ICreateUserPayload, IUpdateUserPayload, IUpdateUserFotoPayload } from '~/domain/models/IUser';
+import type { IUser, ICreateUserPayload, IUpdateUserPayload, IUpdateUserFotoPayload, IActivateUserPayload } from '~/domain/models/IUser';
 import type { IApiResponse } from '~/domain/types/IApiResponse';
 import type { IPaginationQuery } from '~/domain/types/IPaginationQuery';
 
@@ -46,6 +46,13 @@ export class UserService extends BaseService {
         return await this.api<IApiResponse<IUser>>(endpoints.USER.FOTO_PROFIL(id), {
             method: 'PATCH',
             body: formData,
+        });
+    }
+
+    static async isActivateUser(id: number, payload: IActivateUserPayload): Promise<IApiResponse<IUser>> {
+        return await this.api<IApiResponse<IUser>>(endpoints.USER.ACTIVE(id), {
+            method: 'PATCH',
+            body: payload,
         });
     }
 }

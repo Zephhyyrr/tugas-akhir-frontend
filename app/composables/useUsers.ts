@@ -1,6 +1,6 @@
 
 import { UserService } from '~/application/services/UserServices';
-import type { ICreateUserPayload, IUpdateUserPayload, IUpdateUserFotoPayload } from '~/domain/models/IUser';
+import type { ICreateUserPayload, IUpdateUserPayload, IUpdateUserFotoPayload, IActivateUserPayload } from '~/domain/models/IUser';
 import type { IPaginationQuery } from '~/domain/types/IPaginationQuery';
 
 export const useUser = () => {
@@ -35,12 +35,17 @@ export const useUser = () => {
         return await UserService.updateFotoProfil(id, payload);
     };
 
+    const activateUser = async (id: number, payload: IActivateUserPayload) => {
+        return await UserService.isActivateUser(id, payload);
+    };
+
     return {
         fetchUsers,
         fetchUserById,
         createUser,
         updateUser,
         deleteUser,
-        updateFotoProfil
+        updateFotoProfil,
+        activateUser
     };
 };

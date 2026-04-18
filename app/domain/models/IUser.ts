@@ -5,6 +5,7 @@ export interface IUser {
     role: 'superadmin' | 'admin' | string; 
     fotoProfile: string | null;
     isVerified: boolean;
+    isActive: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -22,4 +23,8 @@ export interface IUpdateUserPayload extends Partial<Omit<IUser, 'id' | 'createdA
 // Foto Profil Payload
 export interface IUpdateUserFotoPayload {
     fotoProfile: File;
+}
+
+export interface IActivateUserPayload {
+    isActive: boolean;
 }

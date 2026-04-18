@@ -56,6 +56,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'dashboard'
+});
+
 import { ref } from 'vue';
 
 const transactionType = ref('income');
