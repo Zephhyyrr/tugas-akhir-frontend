@@ -18,7 +18,7 @@ export const createHttpClient = () => {
             if (response?.status === 401) {
                 const authToken = useCookie('token')
                 authToken.value = null
-                window.location.href = '/login'
+                window.location.href = '/auth/login'
             }
         }
     })

@@ -33,9 +33,9 @@
                                     class="px-4 py-2 text-sm font-medium text-font-color hover:bg-gray-200 bg-gray-100 rounded-xl transition-colors outline-none">
                                     Batal
                                 </button>
-                                <button @click="confirm" :class="confirmButtonClass">
-                                    {{ confirmText }}
-                                </button>
+
+                                <BaseButton @click="confirm" :text="confirmText"
+                                    :variant="type === 'info' ? 'primary' : type" :fullWidth="false" />
                             </slot>
                         </div>
 
@@ -67,27 +67,15 @@ const close = () => {
 
 const confirm = () => {
     emit('confirm');
-    emit('update:modelValue', false); // Tutup otomatis jika tombol confirm ditekan
+    emit('update:modelValue', false);
 };
 
-// Menyesuaikan warna icon sesuai tipe dan Tailwind config kustom
 const iconContainerClass = computed(() => {
     switch (props.type) {
         case 'success': return 'w-10 h-10 rounded-full flex items-center justify-center bg-success/10 text-success';
         case 'danger': return 'w-10 h-10 rounded-full flex items-center justify-center bg-error/10 text-error';
         case 'warning': return 'w-10 h-10 rounded-full flex items-center justify-center bg-warning/10 text-warning';
         default: return 'w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 text-primary';
-    }
-});
-
-// Menyesuaikan warna tombol sesuai tipe dan Tailwind config kustom
-const confirmButtonClass = computed(() => {
-    const base = 'px-4 py-2 text-sm font-semibold text-white rounded-xl transition-all duration-200 outline-none';
-    switch (props.type) {
-        case 'success': return `${base} bg-success hover:bg-success/80`;
-        case 'danger': return `${base} bg-error hover:bg-error/80`;
-        case 'warning': return `${base} bg-warning hover:bg-warning/80`;
-        default: return `${base} bg-primary hover:bg-secondary`;
     }
 });
 </script>
