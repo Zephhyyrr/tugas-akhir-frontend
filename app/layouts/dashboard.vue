@@ -48,4 +48,16 @@ try {
 } catch (e) {
   // Gracefully skip if useTheme doesn't exist
 }
+
+try {
+  const { me, isAuthenticated, user } = useAuth();
+
+  onMounted(async () => {
+    if (isAuthenticated.value && !user.value) {
+      await me();
+    }
+  });
+} catch (e) {
+  // Gracefully skip if auth composable is unavailable
+}
 </script>

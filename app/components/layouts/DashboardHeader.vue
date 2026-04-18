@@ -57,7 +57,6 @@ defineEmits(['toggleMenu']);
 
 const route = useRoute();
 const { logout, user } = useAuth();
-const {data: userData} = useUser();
 const showLogoutModal = ref(false);
 const logoutAlert = ref(false);
 
@@ -80,7 +79,7 @@ const userInitials = computed(() => {
     }
     return names[0][0].toUpperCase();
   }
-  return 'A'; // Admin fallback
+  return 'A'; 
 });
 
 const currentRouteName = computed(() => {
@@ -88,6 +87,7 @@ const currentRouteName = computed(() => {
     case '/dashboard': return 'Dashboard Utama';
     case '/dashboard/reports': return 'Laporan Transaksi';
     case '/dashboard/input': return 'Input Donasi';
+    case '/dashboard/input-keterangan': return 'Input Keterangan';
     case '/dashboard/settings': return 'Pengaturan Sistem';
     case '/dashboard/users': return 'Manajemen Pengguna';
     default:

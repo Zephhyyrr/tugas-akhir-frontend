@@ -6,17 +6,18 @@ export interface IUser {
     fotoProfile: string | null;
     isVerified: boolean;
     isActive: boolean;
+    isDeleted: boolean;
     createdAt: string;
     updatedAt: string;
 }
 
 // Create Payload
-export interface ICreateUserPayload extends Omit<IUser, 'id' | 'createdAt' | 'updatedAt' | 'isVerified' | 'fotoProfile'> {
+export interface ICreateUserPayload extends Omit<IUser, 'id' | 'createdAt' | 'updatedAt' | 'isVerified' | 'fotoProfile' | 'isDeleted'> {
     password: string;
 }
 
 // Update Payload
-export interface IUpdateUserPayload extends Partial<Omit<IUser, 'id' | 'createdAt' | 'updatedAt' | 'isVerified' | 'fotoProfile'>> {
+export interface IUpdateUserPayload extends Partial<Omit<IUser, 'id' | 'createdAt' | 'updatedAt' | 'isVerified' | 'fotoProfile' | 'isDeleted'>> {
     password?: string;
 }
 

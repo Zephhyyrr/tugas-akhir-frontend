@@ -64,7 +64,8 @@
       <NuxtLink to="/dashboard/users"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
-          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4'
+          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4',
+          isUsersRouteActive && 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium'
         ]"
         active-class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
         @click="$emit('close')">
@@ -86,7 +87,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useRoute } from '#imports';
 import { LayoutDashboardIcon, FileTextIcon, PenLineIcon, SettingsIcon, UsersIcon, XIcon, PenBox, NotebookPen } from 'lucide-vue-next';
+
+const route = useRoute();
+const isUsersRouteActive = computed(() => route.path === '/dashboard/users' || route.path.startsWith('/dashboard/users/'));
 
 defineProps({
   isOpen: {

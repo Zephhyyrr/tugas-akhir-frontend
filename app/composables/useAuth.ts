@@ -20,9 +20,18 @@ export const useAuth = () => {
         router.push('/auth/login');
     };
 
+    const me = async () => {
+        const response = await AuthService.getMe();
+        if (response.success && response.data) {
+            authStore.setAuth(response.data.user, response.data.token);
+        }
+        return response;
+    };
+
     return {
         login,
         logout,
+        me,
         forgotPassword: (payload: any) => AuthService.forgotPassword(payload),
         resetPassword: (payload: any) => AuthService.resetPassword(payload),
         verifyEmail: (payload: any) => AuthService.verifyEmail(payload),

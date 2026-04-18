@@ -39,6 +39,14 @@ export const useUser = () => {
         return await UserService.isActivateUser(id, payload);
     };
 
+    const fetchDraftUsers = (params: Ref<IPaginationQuery>) => {
+        return useAsyncData(
+            'users-draft-list',
+            () => UserService.getDraftUsers(params.value),
+            { watch: [params] }
+        );
+    };
+
     return {
         fetchUsers,
         fetchUserById,
@@ -46,6 +54,7 @@ export const useUser = () => {
         updateUser,
         deleteUser,
         updateFotoProfil,
-        activateUser
+        activateUser,
+        fetchDraftUsers,
     };
 };

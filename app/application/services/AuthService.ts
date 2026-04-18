@@ -37,4 +37,10 @@ export class AuthService extends BaseService {
             body: payload
         });
     }
+
+    static async getMe(): Promise<IApiResponse<ILoginResponse>> {
+        return await this.api<IApiResponse<ILoginResponse>>(endpoints.AUTH.ME, {
+            method: 'GET',
+        });
+    }
 }

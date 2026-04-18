@@ -55,4 +55,11 @@ export class UserService extends BaseService {
             body: payload,
         });
     }
+
+    static async getDraftUsers(params?: IPaginationQuery): Promise<IApiResponse<IUser[]>> {
+        return await this.api<IApiResponse<IUser[]>>(endpoints.USER.GET_DRAFT, {
+            method: 'GET',
+            query: params,
+        });
+    }
 }

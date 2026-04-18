@@ -5,6 +5,7 @@ export const endpoints = {
         FORGOT_PASSWORD: 'auth/forgot-password',
         RESET_PASSWORD: 'auth/reset-password',
         VERIFY_EMAIL: 'auth/verify-email',
+        ME: 'auth/me',
     },
 
     USER: {
@@ -15,6 +16,7 @@ export const endpoints = {
         DELETE: (id: number) => `users/${id}`,
         FOTO_PROFIL: (id: number) => `users/${id}/photo`,
         ACTIVE: (id: number) => `users/${id}/activate`,
+        GET_DRAFT: 'users/draft',
     },
 
     CONTENT: {

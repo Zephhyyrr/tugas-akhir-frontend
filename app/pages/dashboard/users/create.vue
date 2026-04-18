@@ -1,27 +1,33 @@
 <template>
   <div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Tambah Pengguna Baru</h1>
-      <p class="text-gray-600">Isi formulir untuk menambahkan pengguna ke dalam sistem</p>
+    <div class="mb-6 flex items-center gap-4">
+      <NuxtLink to="/dashboard/users" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
+        <Icon icon="lucide:arrow-left" class="w-5 h-5 text-gray-600" />
+      </NuxtLink>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Tambah Pengguna Baru</h1>
+        <p class="text-gray-600">Isi formulir untuk menambahkan pengguna ke dalam sistem</p>
+      </div>
     </div>
+
+    <BaseAlert v-if="errorMessage" :message="errorMessage" type="error" class="mb-6" />
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
       <form @submit.prevent="submitForm">
         <div class="space-y-6">
-          <!-- Name -->
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+            <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
             <input 
-              id="name" 
-              v-model="form.name" 
+              id="nama" 
+              v-model="form.nama" 
               type="text" 
               required 
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+              :disabled="isSubmitting"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="Contoh: Budi Santoso"
             >
           </div>
 
-          <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">Alamat Email</label>
             <input 
@@ -29,75 +35,127 @@
               v-model="form.email" 
               type="email" 
               required 
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+              :disabled="isSubmitting"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="nama@email.com"
             >
           </div>
 
-          <!-- Role -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              id="password"
+              v-model="form.password"
+              type="password"
+              required
+              minlength="6"
+              :disabled="isSubmitting"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="Minimal 6 karakter"
+            >
+          </div>
+
           <div>
             <label for="role" class="block text-sm font-medium text-gray-700">Peran (Role)</label>
             <select 
               id="role" 
               v-model="form.role" 
               required 
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+              :disabled="isSubmitting"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <option value="Administrator">Administrator</option>
-              <option value="Staff">Staff</option>
+              <option value="superadmin">Super Admin</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
 
-          <!-- Status -->
           <div>
-            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+            <label for="isActive" class="block text-sm font-medium text-gray-700">Status</label>
             <select 
-              id="status" 
-              v-model="form.status" 
+              id="isActive" 
+              v-model="form.isActive" 
               required 
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+              :disabled="isSubmitting"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
+              <option :value="true">Active</option>
+              <option :value="false">Inactive</option>
             </select>
           </div>
         </div>
 
-        <div class="mt-8 flex justify-end space-x-3">
-          <NuxtLink to="/dashboard/users" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors">
+        <div class="mt-8 flex justify-end items-center gap-3">
+          <NuxtLink to="/dashboard/users" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 font-medium transition-colors outline-none focus:ring-2 focus:ring-emerald-500/50">
             Batal
           </NuxtLink>
-          <button 
+          
+          <BaseButton 
             type="submit" 
-            class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium transition-colors"
-          >
-            Simpan Pengguna
-          </button>
+            :isLoading="isSubmitting" 
+            text="Simpan Pengguna" 
+            icon="lucide:save"
+            :fullWidth="false" 
+          />
         </div>
       </form>
     </div>
+
+    <BaseModal
+      v-model="showSuccessModal"
+      title="Berhasil"
+      icon="lucide:badge-check"
+      type="success"
+      confirmText="Kembali ke daftar user"
+      @confirm="handleSuccessConfirm"
+    >
+      <p class="text-sm text-gray-700">User berhasil dibuat.</p>
+    </BaseModal>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { definePageMeta, useRouter } from '#imports';
+import { Icon } from '@iconify/vue';
+
+import { useUser } from '~/composables/useUsers';
+import type { ICreateUserPayload } from '~/domain/models/IUser';
+
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard' as any
 });
 
-import { useUsers } from '~/application/stores/useUsersStore';
-
-const { addUser } = useUsers();
 const router = useRouter();
+const { createUser } = useUser();
 
-const form = ref({
-  name: '',
+const form = ref<ICreateUserPayload>({
+  nama: '',
   email: '',
-  role: 'Staff',
-  status: 'Active'
+  password: '',
+  role: 'admin',
+  isActive: true
 });
 
-const submitForm = () => {
-  addUser({ ...form.value });
+const isSubmitting = ref(false);
+const errorMessage = ref('');
+const showSuccessModal = ref(false);
+
+const handleSuccessConfirm = () => {
+  showSuccessModal.value = false;
   router.push('/dashboard/users');
+};
+
+const submitForm = async () => {
+  isSubmitting.value = true;
+  errorMessage.value = '';
+
+  try {
+    await createUser(form.value);
+    showSuccessModal.value = true;
+  } catch (error: any) {
+    errorMessage.value = error?.data?.message || error?.message || 'Gagal menyimpan pengguna.';
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
