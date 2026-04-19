@@ -177,11 +177,22 @@
               <td class="px-6 py-4 text-gray-500">{{ (currentPage - 1) * pageSize + index + 1 }}</td>
               <td class="px-6 py-4 text-gray-900">{{ formatDate(row.tanggal) }}</td>
               <td class="px-6 py-4">
-                <span class="rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">{{ row.keteranganTransaksi?.nama || '-' }}</span>
+                <span
+                  :class="[
+                    'rounded-md px-2 py-1 text-xs font-medium',
+                    Number(row.kredit || 0) > 0 ? 'bg-emerald-100 text-emerald-700' : Number(row.debet || 0) > 0 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                  ]"
+                >
+                  {{ row.keteranganTransaksi?.nama || '-' }}
+                </span>
               </td>
               <td class="px-6 py-4 text-gray-800">{{ row.uraian }}</td>
-              <td class="px-6 py-4 text-right font-semibold text-emerald-600">{{ formatCurrency(row.kredit) }}</td>
-              <td class="px-6 py-4 text-right font-semibold text-red-600">{{ formatCurrency(row.debet) }}</td>
+              <td class="px-6 py-4 text-right font-semibold" :class="Number(row.kredit || 0) > 0 ? 'text-emerald-600' : 'text-gray-400'">
+                {{ formatCurrency(row.kredit) }}
+              </td>
+              <td class="px-6 py-4 text-right font-semibold" :class="Number(row.debet || 0) > 0 ? 'text-red-600' : 'text-gray-400'">
+                {{ formatCurrency(row.debet) }}
+              </td>
             </tr>
           </tbody>
         </table>
