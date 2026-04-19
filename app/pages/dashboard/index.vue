@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
-      <h1 class="text-2xl font-bold text-gray-800">Dashboard Peramalan</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Dashboard Keuangan dan Peramalan</h1>
       <div class="mt-4 md:mt-0">
         <span class="text-sm text-gray-500 bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm">
           {{ currentDate }}

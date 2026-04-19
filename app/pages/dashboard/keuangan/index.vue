@@ -5,7 +5,8 @@
         <h1 class="text-2xl font-bold text-gray-800">Catatan Keuangan</h1>
         <p class="text-gray-600">Kelola Catatan Keuangan Masjid</p>
       </div>
-      <BaseButton text="Tambah Keuangan" variant="primary" :fullWidth="false" icon="lucide:plus" @click="openCreateModal" />
+      <BaseButton text="Tambah Keuangan" variant="primary" :fullWidth="false" icon="lucide:plus"
+        @click="openCreateModal" />
     </div>
 
     <!-- Stats/Tabs -->
@@ -28,17 +29,14 @@
 
     <!-- Search / Filter -->
     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex items-center">
-        <div class="relative w-full max-w-md">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <SearchIcon class="h-5 w-5 text-gray-400" />
-            </div>
-            <input 
-                v-model="searchQuery" 
-                type="text" 
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
-                placeholder="Cari uraian keuangan..."
-            >
+      <div class="relative w-full max-w-md">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <SearchIcon class="h-5 w-5 text-gray-400" />
         </div>
+        <input v-model="searchQuery" type="text"
+          class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+          placeholder="Cari uraian keuangan...">
+      </div>
     </div>
 
     <div v-if="showUndoBanner"
@@ -57,47 +55,64 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sumber (Keterangan)</th>
-              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Kredit (Masuk)</th>
-              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Debet (Keluar)</th>
-              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+              <th scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tanggal</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Uraian</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Sumber (Keterangan)</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Kredit (Masuk)</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Debet (Keluar)</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Aksi</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-if="filteredList.length === 0">
-                <td colspan="7" class="px-6 py-8 text-center text-gray-500 text-sm">
-                    {{ activeTab === 'active' ? 'Belum ada data keuangan aktif.' : 'Tidak ada data keuangan draft.' }}
-                </td>
+              <td colspan="7" class="px-6 py-8 text-center text-gray-500 text-sm">
+                  <div class="flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+                  <Icon icon="lucide:file-question" class="w-12 h-12 text-gray-300 mb-2" />
+                  {{ activeTab === 'active' ? 'Belum ada data keuangan aktif.' : 'Tidak ada data keuangan draft.' }}
+                </div>
+              </td>
             </tr>
             <tr v-else v-for="(item, index) in filteredList" :key="item.id || index" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ((currentParams.page - 1) * currentParams.limit) + index + 1 }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ((currentParams.page - 1) *
+                currentParams.limit) + index + 1 }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(item.tanggal) }}</td>
               <td class="px-6 py-4 text-sm text-gray-900">{{ item.uraian }}</td>
               <td class="px-6 py-4 text-sm text-gray-500">
-                  <span
-                    class="inline-flex px-2 py-1 rounded-md text-xs font-medium"
-                    :class="Number(item.kredit || 0) > 0
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : Number(item.debet || 0) > 0
-                        ? 'bg-red-100 text-red-700'
-                        : 'bg-gray-100 text-gray-600'"
-                  >
-                     {{ item.keteranganTransaksi?.nama || 'Uncategorized' }}
-                  </span>
+                <span class="inline-flex px-2 py-1 rounded-md text-xs font-medium" :class="Number(item.kredit || 0) > 0
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : Number(item.debet || 0) > 0
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-gray-100 text-gray-600'">
+                  {{ item.keteranganTransaksi?.nama || 'Uncategorized' }}
+                </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-emerald-600 text-right">{{ formatCurrency(item.kredit) }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600 text-right">{{ formatCurrency(item.debet) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-emerald-600 text-right">{{
+                formatCurrency(item.kredit) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600 text-right">{{
+                formatCurrency(item.debet) }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button v-if="activeTab === 'active'" @click="openEditModal(item)" class="text-blue-600 hover:text-blue-800 p-1.5 hover:bg-blue-50 rounded-lg mr-2 transition-colors outline-none focus:ring-2 focus:ring-blue-500/50" title="Edit">
+                <button v-if="activeTab === 'active'" @click="openEditModal(item)"
+                  class="text-blue-600 hover:text-blue-800 p-1.5 hover:bg-blue-50 rounded-lg mr-2 transition-colors outline-none focus:ring-2 focus:ring-blue-500/50"
+                  title="Edit">
                   <PencilIcon class="w-4 h-4" />
                 </button>
-                <button v-if="activeTab === 'draft'" @click="openDeleteModal(item, 'restore')" class="text-emerald-700 hover:text-emerald-800 p-1.5 hover:bg-emerald-50 rounded-lg mr-2 transition-colors outline-none focus:ring-2 focus:ring-emerald-500/50" title="Pulihkan">
+                <button v-if="activeTab === 'draft'" @click="openDeleteModal(item, 'restore')"
+                  class="text-emerald-700 hover:text-emerald-800 p-1.5 hover:bg-emerald-50 rounded-lg mr-2 transition-colors outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  title="Pulihkan">
                   <Icon icon="lucide:rotate-ccw" class="w-4 h-4" />
                 </button>
-                <button @click="activeTab === 'draft' ? openDeleteModal(item, 'permanent') : openDeleteModal(item, 'archive')" class="text-amber-700 hover:text-amber-800 p-1.5 hover:bg-amber-50 rounded-lg transition-colors outline-none focus:ring-2 focus:ring-amber-500/50" :title="activeTab === 'active' ? 'Arsipkan' : 'Hapus Permanen'">
+                <button
+                  @click="activeTab === 'draft' ? openDeleteModal(item, 'permanent') : openDeleteModal(item, 'archive')"
+                  class="text-amber-700 hover:text-amber-800 p-1.5 hover:bg-amber-50 rounded-lg transition-colors outline-none focus:ring-2 focus:ring-amber-500/50"
+                  :title="activeTab === 'active' ? 'Arsipkan' : 'Hapus Permanen'">
                   <Icon icon="lucide:trash-2" class="w-4 h-4" />
                 </button>
               </td>
@@ -107,24 +122,18 @@
       </div>
 
       <!-- Pagination Component -->
-      <BasePagination v-if="activeTab === 'active'" v-model="activeParams.page" @update:modelValue="refreshActive" :meta="activeMeta" class="rounded-none border-t border-gray-100" />
-      <BasePagination v-if="activeTab === 'draft'" v-model="draftParams.page" @update:modelValue="refreshDraft" :meta="draftMeta" class="rounded-none border-t border-gray-100" />
+      <BasePagination v-if="activeTab === 'active'" v-model="activeParams.page" @update:modelValue="refreshActive"
+        :meta="activeMeta" class="rounded-none border-t border-gray-100" />
+      <BasePagination v-if="activeTab === 'draft'" v-model="draftParams.page" @update:modelValue="refreshDraft"
+        :meta="draftMeta" class="rounded-none border-t border-gray-100" />
     </div>
 
-    <KeuanganEditModal
-      v-model="showEditModal"
-      :editData="editData"
-      @saved="refreshAll"
-    />
+    <KeuanganEditModal v-model="showEditModal" :editData="editData" @saved="refreshAll" />
 
-    <KeuanganDeleteModal 
-      v-model="showDeleteModal"
-      :item="editData"
-      :mode="deleteMode"
-      @success="handleSuccess"
-    />
+    <KeuanganDeleteModal v-model="showDeleteModal" :item="editData" :mode="deleteMode" @success="handleSuccess" />
 
-    <BaseModal v-model="showResultModal" :title="resultTitle" icon="lucide:badge-check" type="success" confirmText="Tutup">
+    <BaseModal v-model="showResultModal" :title="resultTitle" icon="lucide:badge-check" type="success"
+      confirmText="Tutup">
       <p class="text-sm text-gray-700">{{ resultMessage }}</p>
     </BaseModal>
 
@@ -155,18 +164,18 @@ const { data: activeData, refresh: refreshActive } = fetchTransactions(activePar
 const { data: draftData, refresh: refreshDraft } = fetchDraftTransactions(draftParams);
 
 const getMeta = (resData) => {
-    let res = resData?.value;
-    if (!res) return undefined;
-    if (res.meta) return res.meta;
-    if (res.data?.meta) return res.data.meta;
-    return undefined;
+  let res = resData?.value;
+  if (!res) return undefined;
+  if (res.meta) return res.meta;
+  if (res.data?.meta) return res.data.meta;
+  return undefined;
 };
 
 const getArray = (resData) => {
-    let list = resData?.value;
-    if (list && list.data !== undefined && !Array.isArray(list)) list = list.data;
-    if (list && list.data !== undefined && !Array.isArray(list)) list = list.data;
-    return Array.isArray(list) ? list : [];
+  let list = resData?.value;
+  if (list && list.data !== undefined && !Array.isArray(list)) list = list.data;
+  if (list && list.data !== undefined && !Array.isArray(list)) list = list.data;
+  return Array.isArray(list) ? list : [];
 };
 
 const activeMeta = computed(() => getMeta(activeData));
@@ -177,28 +186,28 @@ const rawList = computed(() => activeTab.value === 'active' ? getArray(activeDat
 
 const searchQuery = ref('');
 const filteredList = computed(() => {
-    if (!searchQuery.value) return rawList.value;
-    const q = searchQuery.value.toLowerCase();
-    return rawList.value.filter(item => 
-        item.uraian?.toLowerCase().includes(q) || 
-        item.keteranganTransaksi?.nama?.toLowerCase().includes(q)
-    );
+  if (!searchQuery.value) return rawList.value;
+  const q = searchQuery.value.toLowerCase();
+  return rawList.value.filter(item =>
+    item.uraian?.toLowerCase().includes(q) ||
+    item.keteranganTransaksi?.nama?.toLowerCase().includes(q)
+  );
 });
 
 const refreshAll = async () => {
-    await refreshActive();
-    await refreshDraft();
+  await refreshActive();
+  await refreshDraft();
 }
 
 // Utility Formatters
 const formatCurrency = (val) => {
-    if(val == null) return '-';
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
+  if (val == null) return '-';
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
 };
 
 const formatDate = (val) => {
-    if(!val) return '-';
-    return new Date(val).toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  if (!val) return '-';
+  return new Date(val).toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' });
 };
 
 // Form state
@@ -208,18 +217,18 @@ const editData = ref({});
 const deleteMode = ref('archive');
 
 const openCreateModal = () => {
-    router.push('/dashboard/keuangan/create');
+  router.push('/dashboard/keuangan/create');
 };
 
 const openEditModal = (item) => {
-    editData.value = { ...item };
-    showEditModal.value = true;
+  editData.value = { ...item };
+  showEditModal.value = true;
 };
 
 const openDeleteModal = (item, mode = 'archive') => {
-    editData.value = { ...item };
-    deleteMode.value = mode;
-    showDeleteModal.value = true;
+  editData.value = { ...item };
+  deleteMode.value = mode;
+  showDeleteModal.value = true;
 };
 
 // Undo logic
@@ -267,7 +276,7 @@ const resultMessage = ref('');
 
 const handleSuccess = async (title, message, eventMode) => {
   await refreshAll();
-  
+
   if (eventMode === 'archive' && editData.value) {
     showDeleteUndo(editData.value.id);
     resultTitle.value = title;

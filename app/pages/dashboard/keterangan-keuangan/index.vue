@@ -71,8 +71,11 @@
               </td>
             </tr>
             <tr v-else-if="filteredList.length === 0">
-              <td colspan="3" class="px-6 py-8 text-center text-gray-500 text-sm">
-                {{ activeTab === 'active' ? 'Belum ada data keterangan.' : 'Tidak ada keterangan di dalam draft.' }}
+              <td colspan="3" class="px-6 py-8">
+                <div class="flex flex-col items-center justify-center text-center text-gray-500 text-sm">
+                  <Icon icon="lucide:file-question" class="w-12 h-12 text-gray-300 mb-2" />
+                  <p>{{ activeTab === 'active' ? 'Belum ada data keterangan.' : 'Tidak ada keterangan di dalam draft.' }}</p>
+                </div>
               </td>
             </tr>
             <tr v-else v-for="(item, index) in filteredList" :key="item.id || index" class="hover:bg-gray-50">
@@ -92,7 +95,8 @@
                   title="Pulihkan">
                   <Icon icon="lucide:rotate-ccw" class="w-4 h-4" />
                 </button>
-                <button @click="activeTab === 'draft' ? openActionModal('delete', item, 'permanent') : openActionModal('delete', item, 'archive')"
+                <button
+                  @click="activeTab === 'draft' ? openActionModal('delete', item, 'permanent') : openActionModal('delete', item, 'archive')"
                   class="text-amber-700 hover:text-amber-800 p-1.5 hover:bg-amber-50 rounded-lg transition-colors outline-none focus:ring-2 focus:ring-amber-500/50"
                   :title="activeTab === 'active' ? 'Arsipkan' : 'Hapus Permanen'">
                   <Icon icon="lucide:trash-2" class="w-4 h-4" />

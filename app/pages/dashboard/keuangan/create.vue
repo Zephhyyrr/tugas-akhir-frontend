@@ -116,8 +116,10 @@ const submitForm = async () => {
     errorMessage.value = '';
 
     try {
+    const safeTanggal = form.value.tanggal ?? new Date().toISOString().split('T')[0];
+
         await createTransaction({
-            tanggal: new Date(form.value.tanggal).toISOString(),
+      tanggal: new Date(`${safeTanggal}T00:00:00`).toISOString(),
             uraian: form.value.uraian,
             id_keterangan_transaksi: parseInt(form.value.id_keterangan_transaksi),
             kredit: Number(form.value.kredit),
