@@ -30,11 +30,25 @@ export const useTransaksi = () => {
         return await TransaksiService.delete(id);
     };
 
+    const fetchDraftTransactions = (params: Ref<IPaginationQuery>) => {
+        return useAsyncData(
+            'transactions-draft-list',
+            () => TransaksiService.getDraft(params.value),
+            { watch: [params] }
+        );
+    }
+
+    const deletePermanentTransaction = async (id: number) => {
+        return await TransaksiService.deletePermanent(id);
+    }
+
     return {
         fetchTransactions,
         fetchTransactionDetail,
         createTransaction,
         updateTransaction,
-        deleteTransaction
+        deleteTransaction,
+        fetchDraftTransactions,
+        deletePermanentTransaction
     };
 };

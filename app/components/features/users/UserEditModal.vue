@@ -9,8 +9,8 @@
             </div>
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Alamat Email</label>
-                <input v-model="editData.email" type="email"
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" />
+                <input v-model="editData.email" type="email" readonly
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm bg-gray-100" />
             </div>
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Role</label>

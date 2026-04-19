@@ -8,7 +8,7 @@
 
                 <Transition name="zoom" appear>
                     <div v-if="modelValue"
-                        class="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden" role="dialog">
+                        :class="['relative w-full bg-white rounded-2xl shadow-xl overflow-hidden', maxWidth]" role="dialog">
 
                         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -55,7 +55,8 @@ const props = defineProps({
     title: { type: String, default: 'Informasi' },
     icon: { type: String, default: '' },
     confirmText: { type: String, default: 'Lanjutkan' },
-    type: { type: String, default: 'info' }
+    type: { type: String, default: 'info' },
+    maxWidth: { type: String, default: 'max-w-md' }
 });
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel']);

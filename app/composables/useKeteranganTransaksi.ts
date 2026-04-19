@@ -31,13 +31,27 @@ export const useKeteranganTransaksi = () => {
 
     const deleteKeterangan = async (id: number) => {
         return await KeteranganTransaksiService.delete(id);
-    };
+    };  
+
+    const fetchDraftKeterangan = (params: Ref<IPaginationQuery>) => {
+        return useAsyncData(
+            'keterangan-transaksi-draft-list',
+            () => KeteranganTransaksiService.getDraft(params.value),
+            { watch: [params] }
+        );
+    }
+
+    const deletePermanentKeterangan = async (id: number) => {
+        return await KeteranganTransaksiService.deletePermanent(id);
+    }
 
     return {
         fetchKeteranganList,
         fetchKeteranganDetail,
         createKeterangan,
         updateKeterangan,
-        deleteKeterangan
+        deleteKeterangan,
+        fetchDraftKeterangan,
+        deletePermanentKeterangan
     };
 };

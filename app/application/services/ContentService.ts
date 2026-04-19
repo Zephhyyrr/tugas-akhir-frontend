@@ -68,4 +68,18 @@ export class ContentService extends BaseService {
             body: JSON.stringify(payload),
         });
     }
+
+    static async getDraftContents(params?: IPaginationQuery): Promise<IApiResponse<IContent[]>> {
+        return await this.api<IApiResponse<IContent[]>>(endpoints.CONTENT.GET_DRAFT, {
+            method: 'GET',
+            query: params,
+        });
+    }
+
+    static async deleteContentPermanently(id: number): Promise<IApiResponse<void>> {
+        return await this.api<IApiResponse<void>>(endpoints.CONTENT.DELETE_PERMANENT(id), {
+            method: 'DELETE',
+        });
+    }
+
 }

@@ -34,12 +34,26 @@ export const useContent = () => {
         return await ContentService.toggleContentStatus(id, payload);
     };
 
+    const fetchDraftContents = (params: Ref<IPaginationQuery>) => {
+        return useAsyncData(
+            'contents-draft-list',
+            () => ContentService.getDraftContents(params.value),
+            { watch: [params] }
+        );
+    }
+
+    const deletePermanentContent = async (id: number) => {
+        return await ContentService.deleteContentPermanently(id);
+    }
+
     return {
         fetchContents,
         fetchContentDetail,
         createContent,
         updateContent,
         deleteContent,
-        toggleStatus
+        toggleStatus,
+        fetchDraftContents,
+        deletePermanentContent
     };
 };

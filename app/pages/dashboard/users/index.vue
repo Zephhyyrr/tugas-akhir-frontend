@@ -8,7 +8,7 @@
       <BaseButton text="Tambah Pengguna" variant="primary" :fullWidth="false" icon="lucide:plus" @click="goToCreate" />
     </div>
 
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex items-center">
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex items-center">
       <div class="relative w-full max-w-md">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <SearchIcon class="h-5 w-5 text-gray-400" />
@@ -25,14 +25,14 @@
           ? 'bg-emerald-600 text-white shadow-sm'
           : 'text-gray-600 hover:bg-gray-100'" @click="activeTab = 'active'">
         Aktif
-        <span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">{{ activeUsers.length }}</span>
+        <span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">{{ activeMeta?.totalItems || 0 }}</span>
       </button>
       <button type="button" class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors"
         :class="activeTab === 'draft'
           ? 'bg-amber-500 text-white shadow-sm'
           : 'text-gray-600 hover:bg-gray-100'" @click="activeTab = 'draft'">
         Draft
-        <span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">{{ draftUsers.length }}</span>
+        <span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">{{ draftMeta?.totalItems || 0 }}</span>
       </button>
     </div>
 
@@ -105,6 +105,10 @@
           </tbody>
         </table>
       </div>
+      
+      <!-- General Pagination Component -->
+      <BasePagination v-if="activeTab === 'active'" v-model="activeParams.page" @update:modelValue="refresh" :meta="activeMeta" class="rounded-none border-t border-gray-100" />
+      <BasePagination v-if="activeTab === 'draft'" v-model="draftParams.page" @update:modelValue="refreshDraft" :meta="draftMeta" class="rounded-none border-t border-gray-100" />
     </div>
 
     <FeaturesUsersUserStatusModal v-model="showStatusModal" :user="selectedUser" @success="handleSuccess" />
@@ -137,11 +141,27 @@ definePageMeta({ layout: 'dashboard' as any });
 
 const router = useRouter();
 const { fetchUsers, fetchDraftUsers, deleteUser } = useUser();
-const { data: apiResponse, pending, refresh } = fetchUsers(ref({ page: 1, limit: 10 }));
-const { data: draftApiResponse, pending: draftPending, refresh: refreshDraft } = fetchDraftUsers(ref({ page: 1, limit: 10 }));
+
+const activeParams = ref({ page: 1, limit: 10 });
+const { data: apiResponse, pending, refresh } = fetchUsers(activeParams);
+
+const draftParams = ref({ page: 1, limit: 10 });
+const { data: draftApiResponse, pending: draftPending, refresh: refreshDraft } = fetchDraftUsers(draftParams);
 
 const users = computed<IUser[]>(() => (apiResponse.value as IApiResponse<IUser[]>)?.data ?? []);
 const draftUsers = computed<IUser[]>(() => (draftApiResponse.value as IApiResponse<IUser[]>)?.data ?? []);
+
+const getMeta = (resData: any) => {
+  const res = resData?.value;
+  if (!res) return undefined;
+  if (res.meta) return res.meta;
+  if (res.data?.meta) return res.data.meta;
+  return undefined;
+};
+
+const activeMeta = computed(() => getMeta(apiResponse));
+const draftMeta = computed(() => getMeta(draftApiResponse));
+
 const activeTab = ref<'active' | 'draft'>('active');
 
 const activeUsers = computed(() => users.value.filter(user => !user.isDeleted));

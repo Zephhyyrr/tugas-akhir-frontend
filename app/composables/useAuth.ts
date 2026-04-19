@@ -23,7 +23,12 @@ export const useAuth = () => {
     const me = async () => {
         const response = await AuthService.getMe();
         if (response.success && response.data) {
-            authStore.setAuth(response.data.user, response.data.token);
+            const payload = response.data as any;
+            const nextUser = payload?.user ?? payload;
+
+            if (nextUser?.email || nextUser?.nama) {
+                authStore.setUser(nextUser);
+            }
         }
         return response;
     };

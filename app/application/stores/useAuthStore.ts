@@ -12,10 +12,14 @@ export const useAuthStore = defineStore('auth', () => {
         token.value = newToken;
     }
 
+    function setUser(newUser: IUser) {
+        user.value = newUser;
+    }
+
     function clearAuth() {
         user.value = null;
         token.value = null;
     }
 
-    return { user, isAuthenticated, setAuth, clearAuth };
+    return { user, isAuthenticated, setAuth, setUser, clearAuth };
 });

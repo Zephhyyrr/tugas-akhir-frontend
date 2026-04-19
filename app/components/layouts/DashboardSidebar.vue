@@ -31,6 +31,7 @@
         <LayoutDashboardIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
         <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Dashboard</span>
       </NuxtLink>
+      
       <NuxtLink to="/dashboard/reports"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
@@ -39,28 +40,45 @@
         active-class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
         @click="$emit('close')">
         <FileTextIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
-        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Laporan</span>
+        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Laporan Laba Rugi</span>
       </NuxtLink>
-      <NuxtLink to="/dashboard/input"
+
+      <NuxtLink to="/dashboard/keuangan"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
-          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4'
+          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4',
+          isTransaksiRouteActive && 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium'
         ]"
         active-class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
         @click="$emit('close')">
-        <NotebookPen class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
-        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Input Donasi</span>
+        <WalletIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
+        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Keuangan</span>
       </NuxtLink>
-      <NuxtLink to="/dashboard/input-keterangan"
+
+      <NuxtLink to="/dashboard/keterangan-keuangan"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
-          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4'
+          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4',
+          isKeteranganRouteActive && 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium'
         ]"
         active-class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
         @click="$emit('close')">
-        <PenBox class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
-        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Input Keterangan Donasi</span>
+        <TagsIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
+        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Ket. Keuangan</span>
       </NuxtLink>
+      
+      <NuxtLink to="/dashboard/content"
+        :class="[
+          'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
+          isCollapsed ? 'justify-center px-0 mt-2' : 'px-4',
+          isContentRouteActive && 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium'
+        ]"
+        active-class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
+        @click="$emit('close')">
+        <FileImageIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
+        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Konten</span>
+      </NuxtLink>
+
       <NuxtLink to="/dashboard/users"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
@@ -72,6 +90,7 @@
         <UsersIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
         <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Manajemen User</span>
       </NuxtLink>
+      
       <NuxtLink to="/dashboard/settings"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
@@ -89,10 +108,22 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from '#imports';
-import { LayoutDashboardIcon, FileTextIcon, PenLineIcon, SettingsIcon, UsersIcon, XIcon, PenBox, NotebookPen } from 'lucide-vue-next';
+import { 
+  LayoutDashboardIcon, 
+  FileTextIcon, 
+  SettingsIcon, 
+  UsersIcon, 
+  XIcon, 
+  WalletIcon, 
+  TagsIcon,
+  FileImageIcon
+} from 'lucide-vue-next';
 
 const route = useRoute();
 const isUsersRouteActive = computed(() => route.path === '/dashboard/users' || route.path.startsWith('/dashboard/users/'));
+const isTransaksiRouteActive = computed(() => route.path === '/dashboard/keuangan' || route.path.startsWith('/dashboard/keuangan/'));
+const isKeteranganRouteActive = computed(() => route.path === '/dashboard/keterangan-keuangan');
+const isContentRouteActive = computed(() => route.path === '/dashboard/content');
 
 defineProps({
   isOpen: {

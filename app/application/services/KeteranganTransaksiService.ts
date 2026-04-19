@@ -7,6 +7,7 @@ import type {
 } from '~/domain/models/IKeteranganTransaksi';
 import type { IApiResponse } from '~/domain/types/IApiResponse';
 import type { IPaginationQuery } from '~/domain/types/IPaginationQuery';
+import type { Static } from 'vue';
 
 export class KeteranganTransaksiService extends BaseService {
     static async getAll(params?: IPaginationQuery): Promise<IApiResponse<IKeteranganTransaksi[]>> {
@@ -38,6 +39,19 @@ export class KeteranganTransaksiService extends BaseService {
 
     static async delete(id: number): Promise<IApiResponse<null>> {
         return await this.api<IApiResponse<null>>(endpoints.KETERANGAN_TRANSAKSI.DELETE(id), {
+            method: 'DELETE',
+        });
+    }
+
+    static async getDraft(params?: IPaginationQuery): Promise<IApiResponse<IKeteranganTransaksi[]>> {
+        return await this.api<IApiResponse<IKeteranganTransaksi[]>>(endpoints.KETERANGAN_TRANSAKSI.GET_DRAFT, {
+            method: 'GET',
+            query: params,
+        });
+    }
+
+    static async deletePermanent(id: number): Promise<IApiResponse<null>> {
+        return await this.api<IApiResponse<null>>(endpoints.KETERANGAN_TRANSAKSI.DELETE_PERMANENT(id), {
             method: 'DELETE',
         });
     }

@@ -26,6 +26,8 @@ export const endpoints = {
         UPDATE: (id: number) => `contents/${id}`,
         DELETE: (id: number) => `contents/${id}`,
         PUBLISHED: (id: number) => `contents/${id}/published`,
+        GET_DRAFT: 'contents/draft',
+        DELETE_PERMANENT: (id: number) => `contents/${id}/delete-permanent`,
     },
 
     KETERANGAN_TRANSAKSI: {
@@ -34,6 +36,8 @@ export const endpoints = {
         CREATE: 'keterangan-transaksi/',
         UPDATE: (id: number) => `keterangan-transaksi/${id}`,
         DELETE: (id: number) => `keterangan-transaksi/${id}`,
+        GET_DRAFT: 'keterangan-transaksi/draft',
+        DELETE_PERMANENT: (id: number) => `keterangan-transaksi/${id}/delete-permanent`,
     },
 
     TRANSAKSI: {
@@ -42,5 +46,7 @@ export const endpoints = {
         CREATE: 'transaksi/',
         UPDATE: (id: number) => `transaksi/${id}`,
         DELETE: (id: number) => `transaksi/${id}`,
+        GET_DRAFT: 'transaksi/draft',
+        DELETE_PERMANENT: (id: number) => `transaksi/${id}/delete-permanent`,
     }
 } as const;

@@ -41,6 +41,9 @@ export class AuthService extends BaseService {
     static async getMe(): Promise<IApiResponse<ILoginResponse>> {
         return await this.api<IApiResponse<ILoginResponse>>(endpoints.AUTH.ME, {
             method: 'GET',
+            query: {
+                _ts: Date.now(),
+            },
         });
     }
 }

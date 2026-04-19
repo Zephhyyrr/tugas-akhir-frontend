@@ -37,4 +37,18 @@ export class TransaksiService extends BaseService {
             method: 'DELETE',
         });
     }
+
+    static async getDraft(params?: IPaginationQuery): Promise<IApiResponse<ITransaksi[]>> {
+        return await this.api<IApiResponse<ITransaksi[]>>(endpoints.TRANSAKSI.GET_DRAFT, {
+            method: 'GET',
+            query: params,
+        });
+    }
+
+    static async deletePermanent(id: number): Promise<IApiResponse<null>> {
+        return await this.api<IApiResponse<null>>(endpoints.TRANSAKSI.DELETE_PERMANENT(id), {
+            method: 'DELETE',
+        });
+    }
+
 }

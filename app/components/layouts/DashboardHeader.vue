@@ -86,12 +86,16 @@ const currentRouteName = computed(() => {
   switch (route.path) {
     case '/dashboard': return 'Dashboard Utama';
     case '/dashboard/reports': return 'Laporan Transaksi';
-    case '/dashboard/input': return 'Input Donasi';
-    case '/dashboard/input-keterangan': return 'Input Keterangan';
+    case '/dashboard/keuangan': return 'Input Donasi';
+    case '/dashboard/keterangan-keuangan': return 'Input Keterangan';
     case '/dashboard/settings': return 'Pengaturan Sistem';
     case '/dashboard/users': return 'Manajemen Pengguna';
+    case '/dashboard/content': return 'Manajemen Konten';
     default:
       if (route.path.startsWith('/dashboard/users/')) return 'Detail Pengguna';
+      if (route.path.startsWith('/dashboard/keuangan/')) return 'Input Donasi';
+      if (route.path.startsWith('/dashboard/keterangan-keuangan/')) return 'Input Keterangan';
+      if (route.path.startsWith('/dashboard/content/')) return 'Manajemen Konten';
       return 'Dashboard';
   }
 });
