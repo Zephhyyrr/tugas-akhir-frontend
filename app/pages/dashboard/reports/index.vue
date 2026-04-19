@@ -5,14 +5,14 @@
         <h1 class="text-2xl font-bold text-gray-800">Laporan Keuangan</h1>
         <p class="text-sm text-gray-500">Tab mengikuti data keterangan keuangan, lengkap dengan filter dan pencarian.</p>
       </div>
-      <button
+      <BaseButton
+        text="Export Excel"
+        variant="primary"
+        :fullWidth="false"
+        icon="lucide:download"
         @click="openExportModal"
         :disabled="!transactions.length"
-        class="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        <DownloadIcon class="mr-2 h-4 w-4" />
-        Export Excel
-      </button>
+      />
     </div>
 
     <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
@@ -476,7 +476,7 @@ const buildSheet = (workbook: XLSX.WorkBook, year: number, month: number, rows: 
   const finalAmount = totalIncome - totalExpense;
 
   const sheetData: (string | number)[][] = [
-    ['LAPORAN KAS SURAU XYZ'],
+    ['LAPORAN KAS SURAU Zam - Zam'],
     [`Periode: ${formatMonthName(month)} ${year}`],
     [''],
     ['No', 'Tanggal', 'Uraian', 'Keterangan', 'Pemasukan', 'Pengeluaran', 'Saldo']
