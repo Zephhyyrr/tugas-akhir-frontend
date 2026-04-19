@@ -122,8 +122,8 @@ import {
 const route = useRoute();
 const isUsersRouteActive = computed(() => route.path === '/dashboard/users' || route.path.startsWith('/dashboard/users/'));
 const isTransaksiRouteActive = computed(() => route.path === '/dashboard/keuangan' || route.path.startsWith('/dashboard/keuangan/'));
-const isKeteranganRouteActive = computed(() => route.path === '/dashboard/keterangan-keuangan');
-const isContentRouteActive = computed(() => route.path === '/dashboard/content');
+const isKeteranganRouteActive = computed(() => route.path === '/dashboard/keterangan-keuangan/' || route.path.startsWith('/dashboard/keterangan-keuangan/'));
+const isContentRouteActive = computed(() => route.path === '/dashboard/content/' || route.path.startsWith('/dashboard/content/'));
 
 defineProps({
   isOpen: {
