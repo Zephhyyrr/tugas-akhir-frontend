@@ -40,7 +40,7 @@
         active-class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-medium"
         @click="$emit('close')">
         <FileTextIcon class="w-5 h-5 flex-shrink-0" :class="!isCollapsed && 'mr-3'" />
-        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Laporan Laba Rugi</span>
+        <span v-show="!isCollapsed" class="whitespace-nowrap transition-opacity duration-300">Laporan Keuangan</span>
       </NuxtLink>
 
       <NuxtLink to="/dashboard/keuangan"
