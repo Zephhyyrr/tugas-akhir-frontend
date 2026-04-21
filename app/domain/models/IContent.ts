@@ -16,14 +16,14 @@ export interface IContent {
 
 // Create Payload
 export interface ICreateContentPayload extends Omit<IContent, 'id' | 'isDeleted' | 'createdAt' | 'updatedAt' | 'user' | 'userId' | 'status' | 'gambarUrl' | 'videoUrl'> {
-    gambarUrl?: File | null;
-    videoUrl?: File | null;
+    gambarUrl?: File | File[] | null;
+    videoUrl?: File | File[] | null;
 }
 
 // Update Payload
 export interface IUpdateContentPayload extends Partial<Omit<IContent, 'id' | 'isDeleted' | 'createdAt' | 'updatedAt' | 'user' | 'userId' | 'gambarUrl' | 'videoUrl'>> {
-    gambarUrl?: File | null;
-    videoUrl?: File | null;
+    gambarUrl?: File | File[] | null;
+    videoUrl?: File | File[] | null;
 }
 
 // Published Payload

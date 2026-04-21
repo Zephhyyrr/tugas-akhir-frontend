@@ -6,6 +6,21 @@ import type { IContent, ICreateContentPayload, IUpdateContentPayload, IPublished
 
 export class ContentService extends BaseService {
 
+    private static appendMedia(formData: FormData, field: string, value?: File | File[] | null) {
+        if (!value) return;
+        if (Array.isArray(value)) {
+            value.forEach((file) => {
+                if (file instanceof File) {
+                    formData.append(field, file);
+                }
+            });
+            return;
+        }
+        if (value instanceof File) {
+            formData.append(field, value);
+        }
+    }
+
     static async getAllContents(params?: IPaginationQuery): Promise<IApiResponse<IContent[]>> {
         return await this.api<IApiResponse<IContent[]>>(endpoints.CONTENT.GET_ALL, {
             method: 'GET',
@@ -23,12 +38,8 @@ export class ContentService extends BaseService {
         const formData = new FormData();
         formData.append('judul', payload.judul);
         formData.append('isi', payload.isi);
-        if (payload.gambarUrl) {
-            formData.append('gambarUrl', payload.gambarUrl);
-        }
-        if (payload.videoUrl) {
-            formData.append('videoUrl', payload.videoUrl);
-        }
+        this.appendMedia(formData, 'gambarUrl', payload.gambarUrl);
+        this.appendMedia(formData, 'videoUrl', payload.videoUrl);
         return await this.api<IApiResponse<IContent>>(endpoints.CONTENT.CREATE, {
             method: 'POST',
             body: formData,
@@ -43,12 +54,8 @@ export class ContentService extends BaseService {
 
         if (payload.status) formData.append('status', payload.status);
 
-        if (payload.gambarUrl instanceof File) {
-            formData.append('gambarUrl', payload.gambarUrl);
-        }
-        if (payload.videoUrl instanceof File) {
-            formData.append('videoUrl', payload.videoUrl);
-        }
+        this.appendMedia(formData, 'gambarUrl', payload.gambarUrl);
+        this.appendMedia(formData, 'videoUrl', payload.videoUrl);
 
         return await this.api<IApiResponse<IContent>>(endpoints.CONTENT.UPDATE(id), {
             method: 'PUT',

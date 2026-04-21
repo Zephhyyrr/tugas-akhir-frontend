@@ -2,13 +2,13 @@
     <Teleport to="body">
         <Transition name="fade">
             <div v-if="modelValue"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4">
+                class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4 overflow-y-auto">
 
                 <div class="absolute inset-0" @click="close"></div>
 
                 <Transition name="zoom" appear>
                     <div v-if="modelValue"
-                        :class="['relative w-full bg-white rounded-2xl shadow-xl overflow-hidden', maxWidth]" role="dialog">
+                        :class="['relative w-full bg-white rounded-2xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col', maxWidth]" role="dialog">
 
                         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -23,7 +23,7 @@
                             </button>
                         </div>
 
-                        <div class="px-6 py-6 text-font-color text-sm leading-relaxed">
+                        <div class="px-6 py-6 text-font-color text-sm leading-relaxed overflow-y-auto min-h-0">
                             <slot></slot>
                         </div>
 

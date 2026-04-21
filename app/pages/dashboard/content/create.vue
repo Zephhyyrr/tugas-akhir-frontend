@@ -23,50 +23,62 @@
           <!-- File Upload Section - Gambar -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama (Opsional)</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Gambar (Opsional)</label>
               
-              <div v-if="imagePreview" class="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm mb-3">
-                <img :src="imagePreview" alt="Preview Gambar" class="w-full h-48 object-cover" />
-                <button @click.prevent="clearImage" class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
-                  <Icon icon="lucide:x" class="w-4 h-4" />
-                </button>
+              <div v-if="imagePreviews.length" class="mb-3 grid grid-cols-2 gap-3">
+                <div
+                  v-for="(preview, index) in imagePreviews"
+                  :key="preview.url"
+                  class="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm"
+                >
+                  <img :src="preview.url" alt="Preview Gambar" class="w-full h-40 object-cover" />
+                  <button @click.prevent="removeImage(index)" class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
+                    <Icon icon="lucide:x" class="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              <div v-else class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:bg-gray-50 transition-colors">
+              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:bg-gray-50 transition-colors">
                 <div class="space-y-1 text-center">
                   <Icon icon="lucide:image" class="mx-auto h-12 w-12 text-gray-400" />
                   <div class="flex text-sm text-gray-600 justify-center">
                     <label for="gambar-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
                       <span>Unggah gambar</span>
-                      <input id="gambar-upload" ref="imageInputRef" type="file" @change="onImageChange" accept="image/jpeg, image/png, image/webp" class="sr-only" :disabled="isSubmitting" />
+                      <input id="gambar-upload" ref="imageInputRef" type="file" multiple @change="onImageChange" accept="image/jpeg, image/png, image/webp" class="sr-only" :disabled="isSubmitting" />
                     </label>
                   </div>
-                  <p class="text-xs text-gray-500">PNG, JPG, WEBP hingga 5MB</p>
+                  <p class="text-xs text-gray-500">Bisa pilih lebih dari 1 file (PNG, JPG, WEBP hingga 5MB)</p>
                 </div>
               </div>
             </div>
 
             <!-- File Upload Section - Video -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Video Utama (Opsional)</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Video (Opsional)</label>
               
-              <div v-if="videoPreview" class="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm mb-3 bg-black">
-                <video :src="videoPreview" controls class="w-full h-48 object-contain"></video>
-                <button @click.prevent="clearVideo" class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-600">
-                  <Icon icon="lucide:x" class="w-4 h-4" />
-                </button>
+              <div v-if="videoPreviews.length" class="mb-3 grid grid-cols-1 gap-3">
+                <div
+                  v-for="(preview, index) in videoPreviews"
+                  :key="preview.url"
+                  class="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-black"
+                >
+                  <video :src="preview.url" controls class="w-full h-40 object-contain"></video>
+                  <button @click.prevent="removeVideo(index)" class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-600">
+                    <Icon icon="lucide:x" class="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              <div v-else class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:bg-gray-50 transition-colors">
+              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:bg-gray-50 transition-colors">
                 <div class="space-y-1 text-center">
                   <Icon icon="lucide:film" class="mx-auto h-12 w-12 text-gray-400" />
                   <div class="flex text-sm text-gray-600 justify-center">
                     <label for="video-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
                       <span>Unggah video</span>
-                      <input id="video-upload" ref="videoInputRef" type="file" @change="onVideoChange" accept="video/mp4, video/webm" class="sr-only" :disabled="isSubmitting" />
+                      <input id="video-upload" ref="videoInputRef" type="file" multiple @change="onVideoChange" accept="video/mp4, video/webm" class="sr-only" :disabled="isSubmitting" />
                     </label>
                   </div>
-                  <p class="text-xs text-gray-500">MP4, WebM hingga 20MB</p>
+                  <p class="text-xs text-gray-500">Bisa pilih lebih dari 1 file (MP4/WebM hingga 20MB)</p>
                 </div>
               </div>
             </div>
@@ -129,54 +141,74 @@ const form = ref({
     judul: '',
     isi: '',
     status: 'draft',
-    gambarUrl: null as File | null,
-    videoUrl: null as File | null
+  gambarUrl: [] as File[],
+  videoUrl: [] as File[]
 });
 
+type PreviewItem = { url: string; isBlob: boolean };
+
 // UI states for Preview Maps
-const imagePreview = ref('');
-const videoPreview = ref('');
+const imagePreviews = ref<PreviewItem[]>([]);
+const videoPreviews = ref<PreviewItem[]>([]);
 const imageInputRef = ref<HTMLInputElement | null>(null);
 const videoInputRef = ref<HTMLInputElement | null>(null);
+
+const clearBlobPreviews = (previews: PreviewItem[]) => {
+  previews.forEach((preview) => {
+    if (preview.isBlob) URL.revokeObjectURL(preview.url);
+  });
+};
+
+const syncImagePreviews = () => {
+  clearBlobPreviews(imagePreviews.value);
+  imagePreviews.value = form.value.gambarUrl.map((file) => ({
+    url: URL.createObjectURL(file),
+    isBlob: true,
+  }));
+};
+
+const syncVideoPreviews = () => {
+  clearBlobPreviews(videoPreviews.value);
+  videoPreviews.value = form.value.videoUrl.map((file) => ({
+    url: URL.createObjectURL(file),
+    isBlob: true,
+  }));
+};
 
 // Functions to handle preview streams via virtual browser memory
 const onImageChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
-        const file = target.files[0];
-        form.value.gambarUrl = file;
-        imagePreview.value = URL.createObjectURL(file);
+    form.value.gambarUrl = [...form.value.gambarUrl, ...Array.from(target.files)];
+    syncImagePreviews();
+    target.value = '';
     }
 };
 
 const onVideoChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
-        const file = target.files[0];
-        form.value.videoUrl = file;
-        videoPreview.value = URL.createObjectURL(file);
+    form.value.videoUrl = [...form.value.videoUrl, ...Array.from(target.files)];
+    syncVideoPreviews();
+    target.value = '';
     }
 };
 
 // Trash the previews so it doesnt rot in RAM
-const clearImage = () => {
-    if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
-    imagePreview.value = '';
-    form.value.gambarUrl = null;
-    if (imageInputRef.value) imageInputRef.value.value = '';
+const removeImage = (index: number) => {
+  form.value.gambarUrl.splice(index, 1);
+  syncImagePreviews();
 };
 
-const clearVideo = () => {
-    if (videoPreview.value) URL.revokeObjectURL(videoPreview.value);
-    videoPreview.value = '';
-    form.value.videoUrl = null;
-    if (videoInputRef.value) videoInputRef.value.value = '';
+const removeVideo = (index: number) => {
+  form.value.videoUrl.splice(index, 1);
+  syncVideoPreviews();
 };
 
 // Prevent Memory Leak when component is destroyed during upload wait
 onBeforeUnmount(() => {
-    if (imagePreview.value) URL.revokeObjectURL(imagePreview.value);
-    if (videoPreview.value) URL.revokeObjectURL(videoPreview.value);
+  clearBlobPreviews(imagePreviews.value);
+  clearBlobPreviews(videoPreviews.value);
 });
 
 const isSubmitting = ref(false);
@@ -197,8 +229,8 @@ const submitForm = async () => {
             judul: form.value.judul,
             isi: form.value.isi,
             status: form.value.status,
-            gambarUrl: form.value.gambarUrl,
-            videoUrl: form.value.videoUrl
+          gambarUrl: form.value.gambarUrl.length ? form.value.gambarUrl : null,
+          videoUrl: form.value.videoUrl.length ? form.value.videoUrl : null
         } as any);
         showSuccessModal.value = true;
     } catch(error: any) {

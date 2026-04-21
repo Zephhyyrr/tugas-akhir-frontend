@@ -33,7 +33,7 @@
         :class="activeTab === 'draft'
           ? 'bg-amber-500 text-white shadow-sm'
           : 'text-gray-600 hover:bg-gray-100'" @click="activeTab = 'draft'">
-        Draft Tersimpan
+        Konten Dihapus
         <span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs">{{ draftMeta?.totalItems || 0 }}</span>
       </button>
     </div>
