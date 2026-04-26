@@ -263,7 +263,7 @@ definePageMeta({
   layout: 'dashboard'
 });
 
-const params = ref({ page: 1, limit: 1000 });
+const params = ref({ page: 1, limit: 10 });
 const { fetchTransactions } = useTransaksi();
 const { data, pending } = fetchTransactions(params as any);
 

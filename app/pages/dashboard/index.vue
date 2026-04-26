@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
-      <h1 class="text-2xl font-bold text-gray-800">Dashboard Keuangan dan Peramalan</h1>
-      <div class="mt-4 md:mt-0">
+      <h1 class="text-2xl font-bold text-gray-800">Dashboard Keuangan</h1>
+      <div class="mt-4 md:mt-0 flex items-center gap-3">
         <span class="text-sm text-gray-500 bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm">
           {{ currentDate }}
         </span>
@@ -30,7 +30,7 @@
     <!-- Actual Cash Chart -->
     <div class="mb-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-800">Chart Uang Masuk dan Uang Keluar</h3>
+        <h3 class="text-lg font-semibold text-gray-800">Tren Uang Masuk dan Uang Keluar</h3>
         <div class="flex items-center gap-2">
           <label class="text-xs text-gray-500">Tahun</label>
           <select v-model.number="selectedChartYear"
@@ -39,44 +39,52 @@
           </select>
         </div>
       </div>
-      <div v-if="transactionPending" class="h-80 bg-gray-100 rounded-xl animate-pulse"></div>
-      <div v-else class="h-80">
-        <ClientOnly>
-          <Bar :data="cashChartData" :options="cashChartOptions" />
-          <template #fallback>
-            <div class="h-80 bg-gray-100 rounded-xl animate-pulse"></div>
-          </template>
-        </ClientOnly>
+      <div v-if="transactionPending" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div class="h-80 bg-gray-100 rounded-xl animate-pulse"></div>
+        <div class="h-80 bg-gray-100 rounded-xl animate-pulse"></div>
+      </div>
+      <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div class="rounded-xl border border-emerald-100 p-3">
+          <p class="mb-2 text-sm font-semibold text-emerald-700">Chart Uang Masuk</p>
+          <div class="h-72">
+            <ClientOnly>
+              <Bar :data="incomeChartData" :options="incomeChartOptions" />
+              <template #fallback>
+                <div class="h-72 bg-gray-100 rounded-xl animate-pulse"></div>
+              </template>
+            </ClientOnly>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-red-100 p-3">
+          <p class="mb-2 text-sm font-semibold text-red-700">Chart Uang Keluar</p>
+          <div class="h-72">
+            <ClientOnly>
+              <Bar :data="expenseChartData" :options="expenseChartOptions" />
+              <template #fallback>
+                <div class="h-72 bg-gray-100 rounded-xl animate-pulse"></div>
+              </template>
+            </ClientOnly>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Controls -->
-    <div class="mb-8">
-      <ForecastingControls @update:duration="handleDurationChange" />
-    </div>
+    <div class="rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-teal-50 p-5 shadow-sm">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">Prediksi Keuangan</p>
+          <h3 class="mt-1 text-lg font-bold text-gray-800">Lanjutkan Analisis ke Halaman Prediksi</h3>
+          <p class="mt-1 text-sm text-gray-600">Lakukan Prediksi untuk Merencanakan Kegiatan Mendatang.</p>
+        </div>
 
-    <!-- Charts Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-      <!-- Income Chart -->
-      <div>
-        <ClientOnly>
-          <MainChart title="Peramalan Pemasukan" :duration="selectedDuration" type="income" :wmape="incomeMetrics.wmape"
-            :rmse="incomeMetrics.rmse" />
-          <template #fallback>
-            <div class="h-96 bg-gray-100 rounded-xl animate-pulse"></div>
-          </template>
-        </ClientOnly>
-      </div>
-
-      <!-- Expense Chart -->
-      <div>
-        <ClientOnly>
-          <MainChart title="Peramalan Pengeluaran" :duration="selectedDuration" type="expense"
-            :wmape="expenseMetrics.wmape" :rmse="expenseMetrics.rmse" />
-          <template #fallback>
-            <div class="h-96 bg-gray-100 rounded-xl animate-pulse"></div>
-          </template>
-        </ClientOnly>
+        <NuxtLink
+          to="/dashboard/prediksi"
+          class="group inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-400/30 transition-all duration-200 hover:-translate-y-0.5 hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/35"
+        >
+          Buka Halaman Prediksi
+          <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">-&gt;</span>
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -98,18 +106,13 @@ import {
   Legend
 } from 'chart.js';
 import { Bar } from 'vue-chartjs';
-import ForecastingControls from '~/components/features/ForecastingControls.vue';
-import MainChart from '~/components/features/MainChart.vue';
 import { useTransaksi } from '~/composables/useTransaksi';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const selectedDuration = ref('year-1');
-const incomeMetrics = ref({ wmape: 4.2, rmse: 125000 });
-const expenseMetrics = ref({ wmape: 5.1, rmse: 85000 });
 const selectedChartYear = ref(new Date().getFullYear());
 
-const params = ref({ page: 1, limit: 1000 });
+const params = ref({ page: 1, limit: 10 });
 const { fetchTransactions } = useTransaksi();
 const { data: transactionResponse, pending: transactionPending } = fetchTransactions(params);
 
@@ -156,7 +159,7 @@ const formatCurrency = (value) => {
 
 const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
-const cashChartData = computed(() => {
+const monthlyCash = computed(() => {
   const incomePerMonth = Array(12).fill(0);
   const expensePerMonth = Array(12).fill(0);
 
@@ -170,23 +173,38 @@ const cashChartData = computed(() => {
   });
 
   return {
+    incomePerMonth,
+    expensePerMonth
+  };
+});
+
+const incomeChartData = computed(() => {
+  return {
     labels: monthLabels,
     datasets: [
       {
         label: 'Uang Masuk',
-        data: incomePerMonth,
+        data: monthlyCash.value.incomePerMonth,
         backgroundColor: '#10b981'
-      },
+      }
+    ]
+  };
+});
+
+const expenseChartData = computed(() => {
+  return {
+    labels: monthLabels,
+    datasets: [
       {
         label: 'Uang Keluar',
-        data: expensePerMonth,
+        data: monthlyCash.value.expensePerMonth,
         backgroundColor: '#ef4444'
       }
     ]
   };
 });
 
-const cashChartOptions = {
+const buildChartOptions = (datasetLabel) => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -195,7 +213,7 @@ const cashChartOptions = {
     },
     tooltip: {
       callbacks: {
-        label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.raw)}`
+        label: (ctx) => `${datasetLabel}: ${formatCurrency(ctx.raw)}`
       }
     }
   },
@@ -207,7 +225,10 @@ const cashChartOptions = {
       }
     }
   }
-};
+});
+
+const incomeChartOptions = buildChartOptions('Uang Masuk');
+const expenseChartOptions = buildChartOptions('Uang Keluar');
 
 const currentDate = new Date().toLocaleDateString('id-ID', {
   weekday: 'long',
@@ -215,32 +236,5 @@ const currentDate = new Date().toLocaleDateString('id-ID', {
   month: 'long',
   day: 'numeric'
 });
-
-const handleDurationChange = (duration) => {
-  selectedDuration.value = duration;
-  updateMetrics(duration);
-};
-
-const updateMetrics = (duration) => {
-  // Simulate metric changes based on duration
-  let multiplier = 1;
-  if (duration.startsWith('month-')) {
-    multiplier = 0.8;
-  } else if (duration === 'year-2') {
-    multiplier = 1.2;
-  } else if (duration === 'year-3') {
-    multiplier = 1.5;
-  }
-
-  incomeMetrics.value = {
-    wmape: parseFloat((4.2 * multiplier).toFixed(1)),
-    rmse: Math.round(125000 * multiplier)
-  };
-
-  expenseMetrics.value = {
-    wmape: parseFloat((5.1 * multiplier).toFixed(1)),
-    rmse: Math.round(85000 * multiplier)
-  };
-}
 
 </script>

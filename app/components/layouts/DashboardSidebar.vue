@@ -20,7 +20,7 @@
     </div>
 
     <nav class="mt-4 space-y-1" :class="isCollapsed ? 'px-2' : 'px-4'">
-      <NuxtLink to="/dashboard"
+      <NuxtLink to="/dashboard/"
         :class="[
           'flex items-center py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors',
           isCollapsed ? 'justify-center px-0' : 'px-4'

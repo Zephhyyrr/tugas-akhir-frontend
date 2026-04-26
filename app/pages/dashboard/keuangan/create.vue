@@ -25,19 +25,19 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Pilih Sumber Keterangan</label>
-            <select v-model="form.id_keterangan_transaksi" required :disabled="isSubmitting" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50">
-              <option value="">-- Pilih --</option>
+            <select v-model.number="form.keteranganTransaksiId" required :disabled="isSubmitting" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50">
+              <option :value="0">-- Pilih --</option>
               <option v-for="ket in keteranganList" :key="ket.id" :value="ket.id">{{ ket.nama }}</option>
             </select>
           </div>
           <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700">Nilai Kredit (Masuk)</label>
-                <input v-model="form.kredit" type="number" required min="0" :disabled="isSubmitting" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50" />
+                <input :value="form.kredit" @input="handleCurrencyInput('kredit', $event)" type="text" inputmode="numeric" :disabled="isSubmitting" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50" placeholder="Rp. 0" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">Nilai Debet (Keluar)</label>
-                <input v-model="form.debet" type="number" required min="0" :disabled="isSubmitting" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50" />
+                <input :value="form.debet" @input="handleCurrencyInput('debet', $event)" type="text" inputmode="numeric" :disabled="isSubmitting" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50" placeholder="Rp. 0" />
               </div>
           </div>
         </div>
@@ -97,9 +97,9 @@ const keteranganList = computed(() => {
 const form = ref({
     tanggal: new Date().toISOString().split('T')[0],
     uraian: '',
-    id_keterangan_transaksi: '',
-    kredit: 0,
-    debet: 0
+  keteranganTransaksiId: 0,
+    kredit: '',
+    debet: ''
 });
 
 const isSubmitting = ref(false);
@@ -111,22 +111,65 @@ const handleSuccessConfirm = () => {
   router.push('/dashboard/keuangan');
 };
 
+const formatRupiah = (value: string) => {
+  const digitsOnly = value.replace(/\D/g, '');
+  if (!digitsOnly) return '';
+  return `Rp. ${Number(digitsOnly).toLocaleString('id-ID')}`;
+};
+
+const parseRupiah = (value: string) => {
+  const digitsOnly = value.replace(/\D/g, '');
+  return digitsOnly ? Number(digitsOnly) : NaN;
+};
+
+const handleCurrencyInput = (field: 'kredit' | 'debet', event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const formatted = formatRupiah(target.value);
+  form.value[field] = formatted;
+  target.value = formatted;
+};
+
 const submitForm = async () => {
     isSubmitting.value = true;
     errorMessage.value = '';
 
     try {
-    const safeTanggal = form.value.tanggal ?? new Date().toISOString().split('T')[0];
+    const tanggal = form.value.tanggal;
+    const keteranganId = Number(form.value.keteranganTransaksiId);
+    const parsedKredit = parseRupiah(form.value.kredit);
+    const parsedDebet = parseRupiah(form.value.debet);
+    const kredit = Number.isNaN(parsedKredit) ? 0 : parsedKredit;
+    const debet = Number.isNaN(parsedDebet) ? 0 : parsedDebet;
+
+    if (!tanggal) {
+      throw new Error('Tanggal wajib diisi.');
+    }
+
+    if (!Number.isInteger(keteranganId) || keteranganId <= 0) {
+      throw new Error('Keterangan transaksi tidak valid.');
+    }
+
+    if (kredit < 0 || debet < 0) {
+      throw new Error('Nilai kredit/debet tidak valid.');
+    }
+
+    if (kredit <= 0 && debet <= 0) {
+      throw new Error('Isi salah satu: kredit atau debet.');
+    }
+
+    if (kredit > 0 && debet > 0) {
+      throw new Error('Pilih salah satu saja: kredit atau debet.');
+    }
+
+    const formattedTanggal = new Date(`${tanggal}T10:30:00.000Z`).toISOString();
 
         await createTransaction({
-      tanggal: new Date(`${safeTanggal}T00:00:00`).toISOString(),
+      tanggal: formattedTanggal,
             uraian: form.value.uraian,
-            id_keterangan_transaksi: parseInt(form.value.id_keterangan_transaksi),
-            kredit: Number(form.value.kredit),
-            debet: Number(form.value.debet),
-            isActive: true,
-            isDeleted: false
-        } as any);
+          keteranganTransaksiId: keteranganId,
+            kredit,
+            debet
+        });
         showSuccessModal.value = true;
     } catch(error: any) {
         console.error('Error creating:', error);
