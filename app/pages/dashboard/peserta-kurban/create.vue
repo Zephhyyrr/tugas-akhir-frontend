@@ -1,7 +1,8 @@
 <template>
   <div class="max-w-2xl mx-auto">
     <div class="mb-6 flex items-center gap-4">
-      <NuxtLink to="/dashboard/peserta-kurban" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+      <NuxtLink to="/dashboard/peserta-kurban"
+        class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
         <Icon icon="lucide:arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-400" />
       </NuxtLink>
       <div>
@@ -61,11 +62,14 @@
             <select v-model.number="form.kelompokKurbanId" :disabled="isSubmitting || !form.tahun"
               class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
               <option :value="null">-- Pilih Kelompok Kurban --</option>
-              <option v-for="kel in filteredKelompokList" :key="kel.id" :value="kel.id" :disabled="(kel.peserta?.length || 0) >= 7">
-                {{ kel.nama }} ({{ kel.peserta?.length || 0 }}/7) {{ (kel.peserta?.length || 0) >= 7 ? ' - Penuh' : '' }}
+              <option v-for="kel in filteredKelompokList" :key="kel.id" :value="kel.id"
+                :disabled="(kel.peserta?.length || 0) >= 7">
+                {{ kel.nama }} ({{ kel.peserta?.length || 0 }}/7) {{ (kel.peserta?.length || 0) >= 7 ? ' - Penuh' : ''
+                }}
               </option>
             </select>
-            <p v-if="!form.tahun" class="mt-1 text-xs text-red-500">Isi "Tahun Kurban" terlebih dahulu untuk memilih kelompok.</p>
+            <p v-if="!form.tahun" class="mt-1 text-xs text-red-500">Isi "Tahun Kurban" terlebih dahulu untuk memilih
+              kelompok.</p>
           </div>
         </div>
         <div class="mt-8 flex justify-end items-center gap-3">
@@ -73,13 +77,15 @@
             class="px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 font-medium transition-colors">
             Batal
           </NuxtLink>
-          <BaseButton type="submit" :isLoading="isSubmitting" text="Simpan Data" icon="lucide:save" :fullWidth="false" />
+          <BaseButton type="submit" :isLoading="isSubmitting" text="Simpan Data" icon="lucide:save"
+            :fullWidth="false" />
         </div>
       </form>
     </div>
 
     <BaseModal v-model="showSuccessModal" title="Berhasil" icon="lucide:badge-check" type="success"
-      confirmText="Kembali ke daftar" @confirm="() => { showSuccessModal = false; router.push('/dashboard/peserta-kurban'); }">
+      confirmText="Kembali ke daftar"
+      @confirm="() => { showSuccessModal = false; router.push('/dashboard/peserta-kurban'); }">
       <p class="text-sm text-gray-700">Peserta kurban berhasil ditambahkan.</p>
     </BaseModal>
   </div>
@@ -124,13 +130,13 @@ const filteredKelompokList = computed(() => {
 const availableYears = computed(() => {
   const years = kelompokList.value.map((k: any) => k.tahun).filter(Boolean);
   return [...new Set(years)].sort((a, b) => {
-    return String(b).localeCompare(String(a)); 
+    return String(b).localeCompare(String(a));
   });
 });
 
 const form = ref({
   nama: '',
-  tipe: 'individu_kambing' as TipeKurban,
+  tipe: 'kelompok' as TipeKurban,
   nominalText: '',
   tahun: '',
   mediaPembayaranId: 0,
