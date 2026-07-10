@@ -23,9 +23,14 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Tahun Kurban</label>
-            <input v-model="form.tahun" type="text" required :disabled="isSubmitting"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-              placeholder="Contoh: 2024, 1445 H, ..." />
+            <select v-model="form.tahun" required :disabled="isSubmitting"
+              class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm disabled:opacity-50 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
+              <option value="" disabled>-- Pilih Tahun Kurban --</option>
+              <option v-for="year in availableYears" :key="String(year)" :value="year">{{ year }}</option>
+            </select>
+            <p v-if="availableYears.length === 0" class="mt-1 text-xs text-amber-500">
+              Belum ada data kelompok kurban untuk memuat tahun.
+            </p>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Tipe Kurban</label>
@@ -114,6 +119,13 @@ const kelompokList = computed(() => extractList(kkData));
 
 const filteredKelompokList = computed(() => {
   return kelompokList.value.filter(k => k.tahun === form.value.tahun);
+});
+
+const availableYears = computed(() => {
+  const years = kelompokList.value.map((k: any) => k.tahun).filter(Boolean);
+  return [...new Set(years)].sort((a, b) => {
+    return String(b).localeCompare(String(a)); 
+  });
 });
 
 const form = ref({
