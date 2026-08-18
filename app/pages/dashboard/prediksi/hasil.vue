@@ -19,6 +19,15 @@
             class="mb-8 p-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50 rounded-lg">
             {{ error }}
         </div>
+        
+        <div v-if="warning"
+            class="mb-8 p-4 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 rounded-lg flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <div>
+                <h4 class="font-semibold text-sm">Peringatan Kualitas Data</h4>
+                <p class="text-sm mt-1">{{ warning }}</p>
+            </div>
+        </div>
 
         <div class="space-y-8">
             <div
@@ -94,6 +103,7 @@ const tipe = route.query.tipe || '';
 const tanggal = route.query.tanggal || '';
 const hijri = route.query.hijri || '';
 const hybrid = Number(route.query.hybrid) || 0;
+const warning = route.query.warning || '';
 
 const saving = ref(false);
 const error = ref(null);

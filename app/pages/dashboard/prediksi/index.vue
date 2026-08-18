@@ -89,7 +89,8 @@ const fetchPrediction = async (type) => {
                         tanggal: p.Tanggal,
                         hijri: p.Hari_Besar_Islam,
                         prophet: p.Prediksi_Prophet,
-                        hybrid: p.Prediksi_Hybrid
+                        hybrid: p.Prediksi_Hybrid,
+                        warning: p.data_quality_warning || ''
                     }
                 });
             } else {

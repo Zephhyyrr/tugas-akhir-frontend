@@ -26,14 +26,35 @@
       </button>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex items-center">
-      <div class="relative w-full max-w-md">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <SearchIcon class="h-5 w-5 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex flex-col md:flex-row items-end gap-4">
+      <div class="w-full md:flex-1 relative">
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Cari</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <SearchIcon class="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          </div>
+          <input v-model="searchInput" type="text"
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+            placeholder="Cari uraian keuangan...">
         </div>
-        <input v-model="searchInput" type="text"
-          class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 dark: dark: focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-          placeholder="Cari uraian keuangan...">
+      </div>
+
+      <div class="w-full md:w-48">
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Bulan</label>
+        <select v-model="selectedMonth"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
+          <option value="all">Semua Bulan</option>
+          <option v-for="month in monthOptions" :key="month.value" :value="month.value">{{ month.label }}</option>
+        </select>
+      </div>
+
+      <div class="w-full md:w-48">
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Tahun</label>
+        <select v-model="selectedYear"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400">
+          <option value="all">Semua Tahun</option>
+          <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
+        </select>
       </div>
     </div>
 
@@ -187,15 +208,27 @@ const activePage = ref(1);
 const draftPage = ref(1);
 const searchInput = ref('');
 const searchQuery = ref('');
+const selectedMonth = ref('all');
+const selectedYear = ref('all');
 let searchTimeout = null;
+
+const monthOptions = [
+  { value: 1, label: 'Januari' }, { value: 2, label: 'Februari' }, { value: 3, label: 'Maret' },
+  { value: 4, label: 'April' }, { value: 5, label: 'Mei' }, { value: 6, label: 'Juni' },
+  { value: 7, label: 'Juli' }, { value: 8, label: 'Agustus' }, { value: 9, label: 'September' },
+  { value: 10, label: 'Oktober' }, { value: 11, label: 'November' }, { value: 12, label: 'Desember' }
+];
 
 watch(searchInput, (val) => {
   clearTimeout(searchTimeout);
   searchTimeout = setTimeout(() => {
     searchQuery.value = val;
-    activePage.value = 1;
-    draftPage.value = 1;
   }, 500);
+});
+
+watch([searchQuery, selectedMonth, selectedYear], () => {
+  activePage.value = 1;
+  draftPage.value = 1;
 });
 
 const activeParams = computed(() => ({ limit: 100000 }));
@@ -226,17 +259,38 @@ const draftMeta = computed(() => getMeta(draftData));
 
 const currentParams = computed(() => activeTab.value === 'active' ? activeParams.value : draftParams.value);
 const rawList = computed(() => activeTab.value === 'active' ? getArray(activeData) : getArray(draftData));
-const filteredList = computed(() => {
-  let list = rawList.value;
+
+const availableYears = computed(() => {
+  const activeList = getArray(activeData);
+  const draftList = getArray(draftData);
+  const allList = [...activeList, ...draftList];
+  const years = new Set(allList.map(item => new Date(item.tanggal).getFullYear()).filter(y => !isNaN(y)));
+  const yearArray = Array.from(years).sort((a, b) => b - a);
+  if (yearArray.length === 0) return [new Date().getFullYear()];
+  return yearArray;
+});
+
+const applyFilters = (list) => {
+  let filtered = list;
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase();
-    list = list.filter((item) => 
+    filtered = filtered.filter((item) => 
       item.uraian?.toLowerCase().includes(q) || 
       item.jenisKas?.nama?.toLowerCase().includes(q)
     );
   }
-  return list;
-});
+  if (selectedMonth.value !== 'all' || selectedYear.value !== 'all') {
+    filtered = filtered.filter((item) => {
+      const itemDate = new Date(item.tanggal);
+      if (selectedMonth.value !== 'all' && itemDate.getMonth() + 1 !== selectedMonth.value) return false;
+      if (selectedYear.value !== 'all' && itemDate.getFullYear() !== selectedYear.value) return false;
+      return true;
+    });
+  }
+  return filtered;
+};
+
+const filteredList = computed(() => applyFilters(rawList.value));
 
 const paginatedList = computed(() => {
   const start = ((activeTab.value === 'active' ? activePage.value : draftPage.value) - 1) * 10;
@@ -244,11 +298,7 @@ const paginatedList = computed(() => {
 });
 
 const activeMetaFrontend = computed(() => {
-  let list = getArray(activeData);
-  if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase();
-    list = list.filter((item) => item.uraian?.toLowerCase().includes(q) || item.jenisKas?.nama?.toLowerCase().includes(q));
-  }
+  const list = applyFilters(getArray(activeData));
   const t = list.length;
   const tp = Math.ceil(t / 10) || 1;
   return {
@@ -262,11 +312,7 @@ const activeMetaFrontend = computed(() => {
 });
 
 const draftMetaFrontend = computed(() => {
-  let list = getArray(draftData);
-  if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase();
-    list = list.filter((item) => item.uraian?.toLowerCase().includes(q) || item.jenisKas?.nama?.toLowerCase().includes(q));
-  }
+  const list = applyFilters(getArray(draftData));
   const t = list.length;
   const tp = Math.ceil(t / 10) || 1;
   return {
